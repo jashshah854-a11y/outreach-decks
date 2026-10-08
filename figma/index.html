@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0d0a14">
+<title>Marketing AI does not die in the demo</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0d0a14;--card:#141021;--ink:#f5f2f9;--mu:#b7aec9;--dim:#7e7592;--ln:rgba(255,255,255,.09);
+--pu:#a259ff;--bl:#1abcfe;--gr:#0acf83;--co:#ff7262;--re:#f24e1e;
+--pus:rgba(162,89,255,.14);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--pu)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 80% 20%,rgba(162,89,255,.16),transparent 70%),radial-gradient(700px 420px at 12% 60%,rgba(26,188,254,.07),transparent 70%)}
+.lede{color:#ddd6ea;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* deployment board */
+.board{position:relative;border:1px solid var(--ln);border-radius:18px;background:#0f0b1a;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(162,89,255,.4)}
+.bbar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln);min-width:0}
+.bbar i{width:10px;height:10px;border-radius:50%;background:#2a2438;flex:0 0 10px}
+.bbar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.smp{display:inline-block;font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--pu);border:1px solid rgba(162,89,255,.45);border-radius:5px;padding:4px 7px;white-space:nowrap;vertical-align:2px}
+.bbar .smp{margin-left:auto;flex:0 0 auto}
+.lane{position:relative;height:440px;overflow:hidden}
+.gate{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.14)}
+.gate b{position:absolute;left:16px;top:-9px;background:#0f0b1a;padding:0 8px;font:600 10.5px/1.6 var(--mono);letter-spacing:.12em;color:var(--dim)}
+.gate.deploy b{color:var(--bl)}
+.gate.adopt b{color:var(--gr)}
+.gate.retire b{color:var(--co)}
+.proto{position:absolute;left:50%;top:0;width:min(300px,calc(100% - 64px));transform:translate(-50%,-120px);background:#17122a;border:1px solid var(--ln);border-radius:12px;padding:10px 12px;font:500 12.5px/1.4 var(--mono);color:#d9d2e8;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;will-change:transform,opacity;z-index:2}
+.proto .dot{width:9px;height:9px;border-radius:50%;background:var(--pu);flex:0 0 9px}
+.proto .nm{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.proto .stamp{margin-left:auto;font:700 9.5px/1 var(--mono);letter-spacing:.08em;padding:4px 7px;border-radius:5px;white-space:nowrap;max-width:100%;opacity:0;transform:scale(.85);transition:opacity .25s ease,transform .25s ease}
+.proto .stamp:empty{display:none}
+.proto.stamped .stamp{opacity:1;transform:none}
+.stamp.pass{background:rgba(10,207,131,.16);color:var(--gr);border:1px solid rgba(10,207,131,.5)}
+.stamp.fail{background:rgba(242,78,30,.14);color:var(--co);border:1px solid rgba(242,78,30,.5)}
+.stamp.ship{background:rgba(26,188,254,.13);color:var(--bl);border:1px solid rgba(26,188,254,.5)}
+.stamp.out{background:rgba(255,114,98,.12);color:var(--co);border:1px solid rgba(255,114,98,.45)}
+.trayrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ln)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 24px;min-width:0}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 20px/1.1 var(--mono);color:var(--ink)}
+.stat span{font-size:14px;color:var(--mu);line-height:1.3}
+.stat .smp{margin:2px 0 0}
+.cursor{position:absolute;font:600 10px/1 var(--mono);padding:4px 8px 4px 6px;border-radius:4px 10px 10px 10px;pointer-events:none;z-index:5}
+.cursor b{font-weight:600;color:#0d0a14}
+.cursor.c1{top:70px;right:24px;background:var(--pu);animation:drift1 9s ease-in-out infinite}
+.cursor.c2{top:210px;left:30px;background:var(--bl);animation:drift2 11s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-16px,14px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-12px)}}
+.staticres{display:none;padding:22px 24px}
+.staticres .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 0;border-bottom:1px solid var(--ln);font:500 13px/1.4 var(--mono);color:#d9d2e8}
+.staticres .row:last-child{border-bottom:0}
+.staticres .nm{flex:1 1 auto;min-width:0}
+.staticres .tags{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto;justify-content:flex-end}
+.staticres .tag{font:700 9.5px/1 var(--mono);letter-spacing:.08em;padding:4px 7px;border-radius:5px;white-space:nowrap}
+.tag.g{background:rgba(10,207,131,.16);color:var(--gr);border:1px solid rgba(10,207,131,.5)}
+.tag.r{background:rgba(242,78,30,.14);color:var(--co);border:1px solid rgba(242,78,30,.5)}
+.tag.b{background:rgba(26,188,254,.13);color:var(--bl);border:1px solid rgba(26,188,254,.5)}
+.tag.o{background:rgba(255,114,98,.12);color:var(--co);border:1px solid rgba(255,114,98,.45)}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--pu);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;min-width:0}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#d8cfc6}
+.card.yes{border-color:rgba(162,89,255,.4)}
+.card.yes .mark{color:var(--pu)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--pu);background:linear-gradient(90deg,var(--pus),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e9e2f5;max-width:720px}
+
+/* machine steps */
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:var(--s6)}
+.steps .card{display:flex;flex-direction:column}
+.steps .n{font:600 12px/1 var(--mono);color:var(--pu);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.steps .card h3{font-size:19px}
+.steps .card p{margin-bottom:var(--s4)}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* first build */
+.sketch{margin-top:var(--s6);border:1px solid rgba(26,188,254,.3);border-radius:18px;background:linear-gradient(180deg,rgba(26,188,254,.06),transparent 60%);padding:30px 28px}
+.sketch h3{font-size:21px;letter-spacing:-.01em;margin:var(--s2) 0}
+.sketch p{color:var(--mu);font-size:16px;line-height:1.6;max-width:640px}
+.sketch ul{list-style:none;margin-top:var(--s4);display:grid;gap:14px}
+.sketch li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55;color:#d9d2e8}
+.sketch li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bl);flex:0 0 8px;margin-top:8px}
+.sketch li>span{flex:1 1 auto;min-width:0}
+.sketch li .smp{margin-left:6px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d9d2e8;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.steps,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.board{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.stat{padding:16px 12px}
+.stat b{font-size:18px}
+.stat span{font-size:13px}
+.rule{font-size:17px;padding:22px 22px}
+.sketch{padding:24px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.lane{height:400px}
+.proto{font-size:12px;padding:9px 11px}
+.cursor.c2{left:14px}
+.staticres{padding:18px 18px}
+}
+@media(prefers-reduced-motion:reduce){
+.js .lane,.js .cursor,.motionrow{display:none}
+.js .staticres{display:block}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Marketing AI does not die in the demo. It dies in deployment.</h1>
+<p class="lede">Every marketing team has a folder of prototypes that once wowed a room. The rare one is still in use on a Tuesday.</p>
+
+<div class="board" role="img" aria-label="Animated illustration: six marketing AI prototypes travel a deployment pipeline through eval, deploy, adopt, and retire gates. Three are shelved at the eval gate for missing evals, an owner, or versioning. Three ship, and one is later retired after 90 quiet days. All figures are sample data.">
+<div class="bbar" aria-hidden="true"><i></i><i></i><i></i><span>marketing-ai-deployment.fig</span><em class="smp">SAMPLE</em></div>
+<div class="lane" id="lane" aria-hidden="true">
+<div class="gate" style="top:22%"><b>EVAL GATE</b></div>
+<div class="gate deploy" style="top:44%"><b>DEPLOY</b></div>
+<div class="gate adopt" style="top:66%"><b>ADOPT</b></div>
+<div class="gate retire" style="top:88%"><b>RETIRE</b></div>
+<div class="cursor c1"><b>Vector</b></div>
+<div class="cursor c2"><b>Ops</b></div>
+</div>
+<div class="staticres" id="staticres" aria-hidden="true"></div>
+<div class="trayrow" aria-hidden="true">
+<div class="stat"><b id="cShip">3</b><span>prototypes shipped</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b id="cShelf">3</b><span>shelved at eval</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b id="cRet">1</b><span>retired for disuse</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>The demo is the easy ten percent.</h2>
+<p class="sub">A prototype proves something can work. A deployment proves it works every week, owned by someone, with a way back when it breaks.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE PROTOTYPE</span><h3>Impressive once</h3><p>A prompt that wowed the meeting. No evals, no owner, no version number. When it drifts, nobody notices until a customer does.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE SYSTEM</span><h3>Boring on purpose</h3><p>The same prompt with an eval gate, a version history, usage telemetry, and a retirement date. It breaks loudly and gets fixed fast.</p></div>
+</div>
+<div class="rule">The rule: a prototype earns production only after it survives an eval set, a named owner, and a rollback plan.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>Deployment is a loop, not a launch.</h2>
+<p class="sub">Sketched as an n8n workflow: gate it, version it, watch it, retire it.</p>
+<div class="steps">
+<div class="card"><span class="n">LOOP 01</span><h3>The eval gate</h3><p>Every prompt version runs a fixed test set before it ships. Drift gets caught at the gate, never in production.</p><div class="act"><b>In practice</b>A Slack alert to the owner with the failing cases attached, before the version goes live.</div></div>
+<div class="card"><span class="n">LOOP 02</span><h3>Version control</h3><p>Prompts, models, and data get version numbers like code. A bad deploy rolls back in one click.</p><div class="act"><b>In practice</b>A ClickUp task auto-filed on every deploy with the prompt diff.</div></div>
+<div class="card"><span class="n">LOOP 03</span><h3>Adoption telemetry</h3><p>Track who uses it, how often, and who stopped. An unused tool is a liability, not an asset.</p><div class="act"><b>In practice</b>A weekly digest to the channel: usage up, flat, or gone quiet.</div></div>
+<div class="card"><span class="n">LOOP 04</span><h3>The retirement ritual</h3><p>Sunset what nobody uses. Archive the learning so the next prototype starts smarter.</p><div class="act"><b>In practice</b>A quarterly retire review. No funerals, just archive notes.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The first build</div>
+<h2>Start where the prompts already live.</h2>
+<p class="sub">Figma Buzz ships AI into brand creative for marketing teams. That is exactly where a deployment loop pays for itself first.</p>
+<div class="sketch">
+<span class="k">Sketch</span>
+<h3>Versioned prompt packs for brand templates</h3>
+<p>Every template's prompts get a version number, an eval set for brand voice, and an owner. This is sample data illustrating the loop, not a claim about how Buzz works today.</p>
+<ul>
+<li><span>Prompt packs versioned per template release, with rollback to the last passing version <em class="smp">SAMPLE</em></span></li>
+<li><span>Brand-voice eval set runs before any pack ships; failures stay out of production <em class="smp">SAMPLE</em></span></li>
+<li><span>Usage telemetry per pack; unused for 90 days gets archived, with the learning kept <em class="smp">SAMPLE</em></span></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">My lane is the last mile: taking an AI prototype and turning it into the workflow the team actually uses, with evals, versioning, and a retirement plan.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All scenarios and figures are fictional sample data.</span><span>Not affiliated with Figma.</span></div></footer>
+
+<script>
+(()=>{
+const lane=document.getElementById('lane'),btn=document.getElementById('pz');
+const cShip=document.getElementById('cShip'),cShelf=document.getElementById('cShelf'),cRet=document.getElementById('cRet');
+const sr=document.getElementById('staticres');
+const rm=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+
+const CARDS=[
+ {name:'Brand-voice rewriter',eval:true,retire:true},
+ {name:'Campaign brief builder',eval:false,reason:'NO EVAL SET'},
+ {name:'Asset resizer',eval:true},
+ {name:'Subject-line tester',eval:false,reason:'NO OWNER'},
+ {name:'Budget summarizer',eval:true},
+ {name:'Launch checklist agent',eval:false,reason:'NO VERSIONING'}
+];
+
+/* static fallback (reduced motion) */
+sr.innerHTML=CARDS.map(c=>{
+ const main=c.eval?'<span class="tag b">ADOPTED</span>':'<span class="tag r">'+c.reason+'</span>';
+ const extra=c.retire?'<span class="tag o">RETIRED · QUIET 90 DAYS</span>':'';
+ return '<div class="row"><span class="nm">'+c.name+'</span><span class="tags">'+main+extra+'</span></div>';
+}).join('');
+
+const FINAL={ship:3,shelf:3,ret:1};
+function showFinal(){cShip.textContent=String(FINAL.ship);cShelf.textContent=String(FINAL.shelf);cRet.textContent=String(FINAL.ret)}
+
+/* timing constants: px/s and ms */
+const GF={eval:.22,deploy:.44,adopt:.66,retire:.88};
+const SPEED=52,SPAWN=2100,STAMP_PAUSE=620,END_REST=5200;
+let active=[],queue=[],shipped=0,shelved=0,retired=0;
+let last=0,spawnTimer=0,restUntil=0,paused=false,visible=true,raf=0,t0=null,elapsed=0;
+
+function bump(){cShip.textContent=String(shipped);cShelf.textContent=String(shelved);cRet.textContent=String(retired)}
+function resetRun(){
+ for(const c of active)c.el.remove();
+ active=[];queue=CARDS.slice();spawnTimer=0;restUntil=0;
+ shipped=0;shelved=0;retired=0;bump();
+}
+function gates(){const H=lane.clientHeight;return[{y:H*GF.eval,k:'eval'},{y:H*GF.deploy,k:'deploy'},{y:H*GF.adopt,k:'adopt'},{y:H*GF.retire,k:'retire'}]}
+
+function spawn(plan){
+ const el=document.createElement('div');
+ el.className='proto';
+ el.innerHTML='<span class="dot"></span><span class="nm">'+plan.name+'</span><span class="stamp"></span>';
+ lane.appendChild(el);
+ const h=el.offsetHeight||40;
+ const y=-h-24;
+ el.style.transform='translate(-50%,'+y+'px)';
+ active.push({el,plan,h,y,gate:0,phase:'fall',hold:0,x:0,o:1});
+}
+
+function stamp(card,text,cls){
+ const s=card.el.querySelector('.stamp');
+ s.textContent=text;s.className='stamp '+cls;
+ card.h=card.el.offsetHeight||card.h;
+ requestAnimationFrame(()=>card.el.classList.add('stamped'));
+}
+
+function tick(dt){
+ if(restUntil>0){restUntil-=dt;if(restUntil<=0)resetRun();return}
+ const gs=gates();
+ spawnTimer-=dt;
+ if(queue.length&&spawnTimer<=0){spawn(queue.shift());spawnTimer=SPAWN}
+ for(const card of active){
+  if(card.phase==='fall'){
+   card.y+=SPEED*dt/1000;
+   const g=gs[card.gate];
+   if(g&&card.y+card.h/2>=g.y){
+    card.y=g.y-card.h/2;
+    card.phase='hold';card.hold=STAMP_PAUSE;
+    if(g.k==='eval'){
+     if(card.plan.eval)stamp(card,'EVAL PASS','pass');
+     else stamp(card,card.plan.reason,'fail');
+    }else if(g.k==='deploy'){stamp(card,'v1.3 DEPLOYED','ship')}
+    else if(g.k==='adopt'){stamp(card,'ADOPTED','ship');shipped++;bump()}
+    else if(g.k==='retire'){
+     if(card.plan.retire){stamp(card,'RETIRED · QUIET 90 DAYS','out');retired++;bump()}
+     else card.phase='fade';
+    }
+    card.y=g.y-card.h/2;
+   }
+  }else if(card.phase==='hold'){
+   card.hold-=dt;
+   if(card.hold<=0){
+    const g=gs[card.gate];
+    if(g.k==='eval'&&!card.plan.eval){card.phase='shelf';shelved++;bump()}
+    else if(g.k==='retire'){card.phase='fade'}
+    else{card.gate++;card.phase='fall'}
+   }
+  }else if(card.phase==='shelf'){
+   card.x+=70*dt/1000;card.o-=dt/700;
+   if(card.o<=0){card.phase='dead';card.el.remove()}
+  }else if(card.phase==='fade'){
+   card.y+=40*dt/1000;card.o-=dt/800;
+   if(card.o<=0){card.phase='dead';card.el.remove()}
+  }
+  if(card.phase!=='dead'){
+   card.el.style.transform='translate(calc(-50% + '+card.x.toFixed(1)+'px),'+card.y.toFixed(1)+'px)';
+   card.el.style.opacity=String(Math.max(card.o,0));
+  }
+ }
+ active=active.filter(c=>c.phase!=='dead');
+ if(!queue.length&&!active.length)restUntil=END_REST;
+}
+
+function frame(now){
+ if(t0===null){t0=now-elapsed;last=elapsed}
+ elapsed=now-t0;
+ const dt=Math.min(elapsed-last,100)||16;last=elapsed;
+ tick(dt);
+ raf=requestAnimationFrame(frame);
+}
+function canRun(){return !paused&&visible&&!document.hidden&&!rm.matches}
+function start(){if(!raf&&canRun()){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+if('IntersectionObserver' in window){
+ new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(lane);
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+btn.addEventListener('click',()=>{
+ paused=!paused;
+ btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+ btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+ paused?stop():start();
+});
+
+function applyMotionPref(){
+ if(rm.matches){stop();for(const c of active)c.el.remove();active=[];queue=[];showFinal()}
+ else{resetRun();start()}
+}
+if(rm.addEventListener)rm.addEventListener('change',applyMotionPref);
+else if(rm.addListener)rm.addListener(applyMotionPref);
+
+applyMotionPref();
+})();
+</script>
+</body>
+</html>

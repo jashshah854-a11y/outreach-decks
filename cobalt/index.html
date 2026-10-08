@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000d2b">
+<title>Every pentest is a growth signal</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#000d2b;--bg2:#010a24;--card:#0a1740;--ink:#f2f6ff;--mu:#a9b6d8;--dim:#6f7ea8;--ln:rgba(140,170,255,.14);
+--ac:#1751ff;--ac2:#06c8fc;--ac3:#ffb900;--acs:rgba(23,81,255,.16);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:16ch;text-wrap:balance}
+h1 .hl{color:var(--ac2)}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+.lede{color:#d9e2fa;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:560px;margin-top:var(--s4)}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s6);background:
+radial-gradient(900px 460px at 85% 20%,rgba(6,200,252,.12),transparent 70%),
+radial-gradient(700px 420px at 10% 60%,rgba(23,81,255,.18),transparent 70%)}
+
+/* the router */
+.router{position:relative;border:1px solid var(--ln);border-radius:18px;background:linear-gradient(180deg,#051238,#020a24);overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(6,200,252,.35)}
+.rhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.rhead .t{font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(6,200,252,.4);border-radius:5px;padding:4px 7px;white-space:nowrap;flex:0 0 auto}
+.rbody{padding:26px 24px 30px;position:relative}
+.pipe{position:relative;display:flex;flex-direction:column;align-items:center}
+.node{position:relative;z-index:2;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px 18px;font:600 13px/1.2 var(--mono);color:var(--ink);letter-spacing:.04em;white-space:nowrap;max-width:100%;transition:border-color .3s ease,box-shadow .3s ease}
+.node .dot{width:9px;height:9px;border-radius:50%;background:var(--dim);flex:0 0 9px}
+.node.on{border-color:rgba(6,200,252,.55);box-shadow:0 0 24px rgba(6,200,252,.25)}
+.node.on .dot{background:var(--ac2)}
+.node.verify.on .dot{background:var(--ac3)}
+.node.verify.on{border-color:rgba(255,185,0,.55);box-shadow:0 0 24px rgba(255,185,0,.22)}
+.rail{width:2px;height:44px;background:linear-gradient(180deg,rgba(6,200,252,.5),rgba(23,81,255,.15));position:relative}
+.chip{position:absolute;top:58px;left:50%;z-index:3;transform:translate(-50%,0);font:700 11px/1 var(--mono);letter-spacing:.08em;color:#031033;background:linear-gradient(135deg,var(--ac2),#5fd9ff);border-radius:8px;padding:8px 12px;white-space:nowrap;box-shadow:0 6px 22px rgba(6,200,252,.4);opacity:0;transition:opacity .3s ease,transform .45s cubic-bezier(.4,0,.2,1)}
+.chip.go{opacity:1}
+.chip.down{transform:translate(-50%,118px)}
+.chip.done{opacity:0;transform:translate(-50%,118px) scale(.85)}
+.lanes{margin-top:26px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.lane{border:1px solid var(--ln);border-radius:14px;background:rgba(10,23,64,.55);padding:18px 16px;opacity:.45;transition:opacity .4s ease,border-color .4s ease,box-shadow .4s ease}
+.lane.lit{opacity:1;border-color:rgba(6,200,252,.5);box-shadow:0 0 26px rgba(6,200,252,.16)}
+.lane .ln2{font:700 11px/1 var(--mono);letter-spacing:.12em;color:var(--dim);display:block;margin-bottom:10px}
+.lane.lit .ln2{color:var(--ac2)}
+.lane h3{font-size:16px;line-height:1.3;letter-spacing:-.01em;margin-bottom:6px}
+.lane p{font-size:13.5px;color:var(--mu);line-height:1.5}
+.lane .art{display:inline-block;margin-top:10px;font:600 11px/1.3 var(--mono);letter-spacing:.06em;color:var(--ac3);border:1px dashed rgba(255,185,0,.45);border-radius:6px;padding:6px 9px;opacity:0;transform:translateY(4px);transition:opacity .35s ease,transform .35s ease}
+.lane.lit .art{opacity:1;transform:none}
+html:not(.js) .lane{opacity:1}
+html:not(.js) .lane .art{opacity:1;transform:none}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.leaks{margin-top:var(--s6);border:1px solid var(--ln);border-radius:18px;overflow:hidden;background:rgba(10,23,64,.35)}
+.leak{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:22px 26px}
+.leak+.leak{border-top:1px solid var(--ln)}
+.leak .sig{font:600 16px/1.4 var(--mono);color:var(--ink)}
+.leak .arrow{font:600 14px/1 var(--mono);color:var(--dim);white-space:nowrap}
+.leak .grave{font-size:15px;color:var(--mu);line-height:1.5}
+.leak .grave b{color:var(--dim);font-weight:600}
+
+/* loops */
+.loops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:var(--s6)}
+.loop{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:28px 26px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.loop::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ac),var(--ac2))}
+.loop .ring{width:34px;height:34px;margin-bottom:var(--s3);display:block}
+.loop .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.loop h3{font-size:20px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.loop .step{margin-top:var(--s3);padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.loop .step+.step{margin-top:var(--s2);padding-top:var(--s2)}
+.loop .step b{display:block;color:var(--ink);font-weight:600;margin-bottom:3px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac2);background:linear-gradient(90deg,rgba(6,200,252,.1),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e3ebff;max-width:720px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d9e2fa;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.loops,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:560px){
+.lanes{grid-template-columns:1fr;gap:10px}
+.lane{padding:14px 14px}
+.leak{grid-template-columns:1fr;gap:6px;padding:18px 20px}
+.leak .arrow{transform:rotate(90deg);justify-self:start}
+.rbody{padding:22px 18px 26px}
+.chip{top:56px}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.router{margin-top:40px;border-radius:16px}
+.rhead{padding:14px 16px}
+.sub{font-size:17px}
+.loop{padding:24px 22px}
+.loop h3{font-size:19px}
+.rule{font-size:17px;padding:22px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+.chip,.lane,.lane .art,.node{transition:none}
+.motionrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Every pentest is a <span class="hl">growth signal.</span> Most never leave the platform.</h1>
+<p class="lede">Cobalt verifies fixes in days. This loop turns that proof into marketing assets, benchmarks, and partner wins.</p>
+
+<div class="router" id="router" role="img" aria-label="Illustration: a sample pentest finding enters the router, a retest verifies the fix, and the signal fans out into three growth lanes: a proof asset, a benchmark stat, and a partner alert. All figures are samples.">
+<div class="rhead" aria-hidden="true"><span class="t">the signal router &middot; live loop</span><em class="smp">SAMPLE</em></div>
+<div class="rbody" aria-hidden="true">
+<div class="pipe">
+<div class="node" id="nEntry"><span class="dot"></span>finding fixed</div>
+<div class="rail"></div>
+<div class="node verify" id="nVerify"><span class="dot"></span>retest verifies</div>
+<div class="chip" id="chip">SQLi &middot; FIXED</div>
+</div>
+<div class="lanes">
+<div class="lane" id="l1"><span class="ln2">LANE 01</span><h3>Proof</h3><p>A verified fix becomes a sales-ready proof point.</p><span class="art">case snippet ready</span></div>
+<div class="lane" id="l2"><span class="ln2">LANE 02</span><h3>Benchmark</h3><p>Fix times join the anonymized industry set.</p><span class="art">peer stat published</span></div>
+<div class="lane" id="l3"><span class="ln2">LANE 03</span><h3>Partner</h3><p>A fast remediation alerts the channel team.</p><span class="art">win alert sent</span></div>
+</div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>Proof dies in the ticket.</h2>
+<p class="sub">A verified fix closes a ticket and the story ends there. Marketing never sees it, benchmarks never learn from it, and partners never hear about it.</p>
+<div class="leaks">
+<div class="leak"><span class="sig">Remediation proof</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="grave"><b>dies in</b> closed tickets nobody rereads</span></div>
+<div class="leak"><span class="sig">Benchmark data</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="grave"><b>dies in</b> PDF reports nobody queries</span></div>
+<div class="leak"><span class="sig">Partner wins</span><span class="arrow" aria-hidden="true">&rarr;</span><span class="grave"><b>dies in</b> silence, never told</span></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>One loop per leak. Agents do the routing.</h2>
+<p class="sub">Three n8n loops read what the platform already knows. Every artifact waits for a human before it leaves Cobalt.</p>
+<div class="loops">
+<div class="loop">
+<svg class="ring" viewBox="0 0 34 34" aria-hidden="true"><path d="M29 17A12 12 0 1 1 17 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round"/><path d="M17 1l5 5-5 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span class="n">LOOP 01</span><h3>Remediation proof</h3>
+<div class="step"><b>Watch</b>The retest passes and the fix is verified on the platform.</div>
+<div class="step"><b>Draft</b>An agent drafts a proof snippet from the verified finding, anonymized by default.</div>
+<div class="step"><b>Hold</b>Security reviews once. Sales gets a one-pager, the site gets a proof point.</div>
+</div>
+<div class="loop">
+<svg class="ring" viewBox="0 0 34 34" aria-hidden="true"><path d="M29 17A12 12 0 1 1 17 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round"/><path d="M17 1l5 5-5 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span class="n">LOOP 02</span><h3>Benchmark</h3>
+<div class="step"><b>Watch</b>Fix times and finding types cluster across industries on the platform.</div>
+<div class="step"><b>Draft</b>An agent aggregates anonymized trends and checks peer-set minimums before publishing.</div>
+<div class="step"><b>Hold</b>A quarterly benchmark report becomes demand-gen fuel and analyst material.</div>
+</div>
+<div class="loop">
+<svg class="ring" viewBox="0 0 34 34" aria-hidden="true"><path d="M29 17A12 12 0 1 1 17 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round"/><path d="M17 1l5 5-5 5" fill="none" stroke="#06c8fc" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<span class="n">LOOP 03</span><h3>Partner</h3>
+<div class="step"><b>Watch</b>A partner's customer remediates unusually fast.</div>
+<div class="step"><b>Draft</b>An agent prepares an anonymized win note for the channel team in Slack.</div>
+<div class="step"><b>Hold</b>The partner gets QBR ammo and a co-marketing moment, with consent first.</div>
+</div>
+</div>
+<div class="rule">The rule: security teams change nothing. The loop reads signals the platform already emits, and no artifact ships without a human sign-off.</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build workflow automations in n8n, run campaign operations and QA across ClickUp and Slack, and design scoring frameworks for partnership programs.</p>
+<p class="q">I start from the data a team already has, and make every signal explainable before it becomes an action.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All figures and scenarios are fictional sample data.</span><span>Not affiliated with Cobalt.</span></div></footer>
+
+<script>
+(()=>{
+const chip=document.getElementById('chip');
+const nEntry=document.getElementById('nEntry'),nVerify=document.getElementById('nVerify');
+const lanes=[document.getElementById('l1'),document.getElementById('l2'),document.getElementById('l3')];
+const btn=document.getElementById('pz');
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+function settle(){
+  chip.classList.add('go','down','done');
+  nEntry.classList.add('on');nVerify.classList.add('on');
+  lanes.forEach(l=>l.classList.add('lit'));
+}
+if(rm.matches){settle();return}
+
+const D=8200;
+const T={enter:0,drop:.14,verify:.34,lanes:[.48,.63,.78],reset:.94};
+let t0=null,elapsed=0,paused=false,raf=0,visible=true,reduced=false;
+const words=['SQLi \u00b7 FIXED','Auth bypass \u00b7 FIXED','SSRF \u00b7 FIXED','XSS \u00b7 FIXED'];
+let wi=0;
+
+function reset(){
+  chip.classList.remove('go','down','done');
+  nEntry.classList.remove('on');nVerify.classList.remove('on');
+  lanes.forEach(l=>l.classList.remove('lit'));
+  chip.textContent=words[wi%words.length];wi++;
+}
+function render(ms){
+  const t=(ms%D)/D;
+  if(t<T.enter||t>=T.reset){ if(chip.classList.contains('go')) reset(); return; }
+  chip.classList.add('go');
+  nEntry.classList.toggle('on',t>=T.enter);
+  chip.classList.toggle('down',t>=T.drop);
+  const verified=t>=T.verify;
+  nVerify.classList.toggle('on',verified);
+  chip.classList.toggle('done',verified);
+  lanes.forEach((l,i)=>l.classList.toggle('lit',t>=T.lanes[i]));
+}
+function frame(now){
+  if(t0===null)t0=now-elapsed;
+  elapsed=now-t0;
+  render(elapsed);
+  raf=requestAnimationFrame(frame);
+}
+function start(){if(!raf&&!paused&&visible&&!reduced&&!document.hidden){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+reset();render(0);start();
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(document.getElementById('router'));
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+if(rm.addEventListener){rm.addEventListener('change',e=>{if(e.matches){reduced=true;stop();settle()}})}
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.setAttribute('aria-pressed',String(paused));
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+})();
+</script>
+</body>
+</html>

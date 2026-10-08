@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e0b07">
+<title>The event is the easy part</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0e0b07;--card:#161009;--ink:#f8f4ec;--mu:#b3a793;--dim:#7e7261;--ln:rgba(255,255,255,.09);
+--gd:#f0a53c;--gd2:#f7c66b;--gr:#0acf83;--bl:#1abcfe;--co:#ff7262;
+--gds:rgba(240,165,60,.14);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--gd2)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 80% 20%,rgba(240,165,60,.16),transparent 70%),radial-gradient(700px 420px at 12% 60%,rgba(247,198,107,.06),transparent 70%)}
+.lede{color:#ddd2bd;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* run-of-show board */
+.board{position:relative;border:1px solid var(--ln);border-radius:18px;background:#100c07;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(240,165,60,.4)}
+.bbar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln);min-width:0}
+.bbar i{width:10px;height:10px;border-radius:50%;background:#2e2718;flex:0 0 10px}
+.bbar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.smp{display:inline-block;font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--gd2);border:1px solid rgba(240,165,60,.45);border-radius:5px;padding:4px 7px;white-space:nowrap;vertical-align:2px}
+.bbar .smp{margin-left:auto;flex:0 0 auto}
+.lane{position:relative;height:440px;overflow:hidden}
+.gate{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.14)}
+.gate b{position:absolute;left:16px;top:-9px;background:#100c07;padding:0 8px;font:600 10.5px/1.6 var(--mono);letter-spacing:.12em;color:var(--dim)}
+.gate.lock b{color:var(--gd2)}
+.gate.show b{color:var(--gd2)}
+.gate.follow b{color:var(--gr)}
+.proto{position:absolute;left:50%;top:0;width:min(300px,calc(100% - 64px));transform:translate(-50%,-120px);background:#1a1409;border:1px solid var(--ln);border-radius:12px;padding:10px 12px;font:500 12.5px/1.4 var(--mono);color:#ded2ba;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;will-change:transform,opacity;z-index:2}
+.proto .dot{width:9px;height:9px;border-radius:50%;background:var(--gd);flex:0 0 9px}
+.proto .nm{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+.proto .stamp{margin-left:auto;font:700 9.5px/1 var(--mono);letter-spacing:.08em;padding:4px 7px;border-radius:5px;white-space:nowrap;max-width:100%;opacity:0;transform:scale(.85);transition:opacity .25s ease,transform .25s ease}
+.proto .stamp:empty{display:none}
+.proto.stamped .stamp{opacity:1;transform:none}
+.stamp.pass{background:rgba(10,207,131,.16);color:var(--gr);border:1px solid rgba(10,207,131,.5)}
+.stamp.fail{background:rgba(255,114,98,.14);color:var(--co);border:1px solid rgba(255,114,98,.5)}
+.stamp.ship{background:rgba(240,165,60,.13);color:var(--gd2);border:1px solid rgba(240,165,60,.5)}
+.trayrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ln)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 24px;min-width:0}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 20px/1.1 var(--mono);color:var(--ink)}
+.stat span{font-size:14px;color:var(--mu);line-height:1.3}
+.stat .smp{margin:2px 0 0}
+.cursor{position:absolute;font:600 10px/1 var(--mono);padding:4px 8px 4px 6px;border-radius:4px 10px 10px 10px;pointer-events:none;z-index:5}
+.cursor b{font-weight:600;color:#0e0b07}
+.cursor.c1{top:70px;right:24px;background:var(--gd);animation:drift1 9s ease-in-out infinite}
+.cursor.c2{top:210px;left:30px;background:var(--bl);animation:drift2 11s ease-in-out infinite}
+@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(-16px,14px)}}
+@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(14px,-12px)}}
+.staticres{display:none;padding:22px 24px}
+.staticres .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:10px 0;border-bottom:1px solid var(--ln);font:500 13px/1.4 var(--mono);color:#ded2ba}
+.staticres .row:last-child{border-bottom:0}
+.staticres .nm{flex:1 1 auto;min-width:0}
+.staticres .tags{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto;justify-content:flex-end}
+.staticres .tag{font:700 9.5px/1 var(--mono);letter-spacing:.08em;padding:4px 7px;border-radius:5px;white-space:nowrap}
+.tag.b{background:rgba(240,165,60,.13);color:var(--gd2);border:1px solid rgba(240,165,60,.5)}
+.tag.r{background:rgba(255,114,98,.14);color:var(--co);border:1px solid rgba(255,114,98,.5)}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--gd);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;min-width:0}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#d8cfc6}
+.card.yes{border-color:rgba(240,165,60,.4)}
+.card.yes .mark{color:var(--gd2)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--gd);background:linear-gradient(90deg,var(--gds),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#eee4d0;max-width:720px}
+
+/* machine steps */
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:var(--s6)}
+.steps .card{display:flex;flex-direction:column}
+.steps .n{font:600 12px/1 var(--mono);color:var(--gd2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.steps .card h3{font-size:19px}
+.steps .card p{margin-bottom:var(--s4)}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* first build */
+.sketch{margin-top:var(--s6);border:1px solid rgba(240,165,60,.3);border-radius:18px;background:linear-gradient(180deg,rgba(240,165,60,.06),transparent 60%);padding:30px 28px}
+.sketch h3{font-size:21px;letter-spacing:-.01em;margin:var(--s2) 0}
+.sketch p{color:var(--mu);font-size:16px;line-height:1.6;max-width:640px}
+.sketch ul{list-style:none;margin-top:var(--s4);display:grid;gap:14px}
+.sketch li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55;color:#ded2ba}
+.sketch li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gd);flex:0 0 8px;margin-top:8px}
+.sketch li>span{flex:1 1 auto;min-width:0}
+.sketch li .smp{margin-left:6px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#ded2ba;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.steps,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.board{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.stat{padding:16px 12px}
+.stat b{font-size:18px}
+.stat span{font-size:13px}
+.rule{font-size:17px;padding:22px 22px}
+.sketch{padding:24px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.lane{height:400px}
+.proto{font-size:12px;padding:9px 11px}
+.cursor.c2{left:14px}
+.staticres{padding:18px 18px}
+}
+@media(prefers-reduced-motion:reduce){
+.js .lane,.js .cursor,.motionrow{display:none}
+.js .staticres{display:block}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>The event is the easy part.</h1>
+<p class="lede">From the SkyLoft at MAU Vegas to Cannes, InMobi's events feel effortless to the people in the room. Effortless is not luck. It is a machine: checklists, run-of-show, lead capture, follow-up, every one of them owned.</p>
+
+<div class="board" role="img" aria-label="Animated illustration: six event-operations items travel an event timeline through T-30 checklist, T-7 lock-in, T-0 showtime, and T+1 follow-up gates. Two stall at a gate, one for a stale RSVP sheet and one for a missing final deck. All figures are sample data.">
+<div class="bbar" aria-hidden="true"><i></i><i></i><i></i><span>event-ops · mau-vegas-run-of-show</span><em class="smp">SAMPLE</em></div>
+<div class="lane" id="lane" aria-hidden="true">
+<div class="gate" style="top:22%"><b>T-30 CHECKLIST</b></div>
+<div class="gate lock" style="top:44%"><b>T-7 LOCK-IN</b></div>
+<div class="gate show" style="top:66%"><b>T-0 SHOWTIME</b></div>
+<div class="gate follow" style="top:88%"><b>T+1 FOLLOW-UP</b></div>
+<div class="cursor c1"><b>Jash</b></div>
+<div class="cursor c2"><b>Ops</b></div>
+</div>
+<div class="staticres" id="staticres" aria-hidden="true"></div>
+<div class="trayrow" aria-hidden="true">
+<div class="stat"><b id="cGo">4</b><span>items through every gate</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b id="cStall">2</b><span>stalled at a gate</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b>212</b><span>booth leads, day one</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>The show is ten percent. The machine is the rest.</h2>
+<p class="sub">The SkyLoft, the booth, the keynote: three days everyone remembers. Behind them sits the part nobody photographs, and it is where events are actually won or lost.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE SHOW</span><h3>What everyone remembers</h3><p>The venue, the energy, the conversations. The show gets the credit, and it should. It is the reason the team flies out.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE MACHINE</span><h3>What makes the show</h3><p>Vendor run-of-show, badge scanners, guest lists, lead routing, the morning-after follow-up. Nobody sees it. It is why the show works.</p></div>
+</div>
+<div class="rule">The rule: an event earns its reputation in the 30 days before showtime, not the three days of it.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>One timeline. Four gates.</h2>
+<p class="sub">Sketched as an n8n workflow on top of ClickUp and Slack: check it, lock it, run it, follow it up.</p>
+<div class="steps">
+<div class="card"><span class="n">LOOP 01</span><h3>The checklist engine</h3><p>Every vendor, badge, RSVP list, and slide deck gets a named owner and a due date in ClickUp. Anything stale gets pinged automatically, not discovered the night before.</p><div class="act"><b>In practice</b>An n8n job flags every checklist item without a confirmed owner at T-7, and a Slack ping goes to the team channel.</div></div>
+<div class="card"><span class="n">LOOP 02</span><h3>The run-of-show tracker</h3><p>One live schedule for showtime: who is where, when, with what. Day-of changes go to one Slack channel, not five group chats.</p><div class="act"><b>In practice</b>A single ClickUp board, mirrored to Slack, so the booth lead always knows the next session.</div></div>
+<div class="card"><span class="n">LOOP 03</span><h3>Lead capture to same-day routing</h3><p>A badge scan is a lead the same minute, not a spreadsheet next week. Every scan routes to the right rep's queue with the conversation notes attached.</p><div class="act"><b>In practice</b>Scans flow from the badge app into the queue, and the rep gets a Slack ping before the attendee leaves the booth.</div></div>
+<div class="card"><span class="n">LOOP 04</span><h3>The T+1 follow-up</h3><p>Every conversation gets its follow-up within one business day. Nothing sits in a spreadsheet waiting for someone to remember it.</p><div class="act"><b>In practice</b>A morning-after digest lists every lead, its owner, and whether the follow-up went out.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The first build</div>
+<h2>Start where the events already are.</h2>
+<p class="sub">MAU Vegas and Cannes are the proving ground. The machine slots into the next flagship without changing how the team works.</p>
+<div class="sketch">
+<span class="k">Sketch</span>
+<h3>Event-ops layer for the next flagship</h3>
+<p>A team that staffs Cannes with Butler students instead of an agency clearly cares about the human side of events. This is the machine that lets that instinct scale. Sample data below; this is a sketch, not a claim about how InMobi runs events today.</p>
+<ul>
+<li><span>Checklist engine per event: every item owned, stale items auto-pinged before lock-in <em class="smp">SAMPLE</em></span></li>
+<li><span>Live run-of-show board, day-of changes in one Slack channel <em class="smp">SAMPLE</em></span></li>
+<li><span>Badge scans routed to reps in minutes, follow-ups out by T+1 <em class="smp">SAMPLE</em></span></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">My lane is the invisible machine: the checklists, the run-of-show, the follow-up routing that make an event feel effortless.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All scenarios and figures are fictional sample data.</span><span>Not affiliated with InMobi.</span></div></footer>
+
+<script>
+(()=>{
+const lane=document.getElementById('lane'),btn=document.getElementById('pz');
+const cGo=document.getElementById('cGo'),cStall=document.getElementById('cStall');
+const sr=document.getElementById('staticres');
+const rm=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+
+const CARDS=[
+ {name:'Booth badge scanner',ok:true},
+ {name:'SkyLoft guest list',ok:true},
+ {name:'Vendor run-of-show',ok:true},
+ {name:'Dinner RSVPs',ok:false,reason:'STALE RSVP SHEET'},
+ {name:'Lead capture app',ok:true},
+ {name:'Keynote slides',ok:false,reason:'NO FINAL DECK'}
+];
+
+/* static fallback (reduced motion) */
+sr.innerHTML=CARDS.map(c=>{
+ const main=c.ok?'<span class="tag b">ROUTED BY T+1</span>':'<span class="tag r">'+c.reason+'</span>';
+ return '<div class="row"><span class="nm">'+c.name+'</span><span class="tags">'+main+'</span></div>';
+}).join('');
+
+const FINAL={go:4,stall:2};
+function showFinal(){cGo.textContent=String(FINAL.go);cStall.textContent=String(FINAL.stall)}
+
+/* timing constants: px/s and ms */
+const GF={check:.22,lock:.44,show:.66,follow:.88};
+const SPEED=52,SPAWN=2100,STAMP_PAUSE=620,END_REST=5200;
+let active=[],queue=[],routed=0,stalled=0;
+let last=0,spawnTimer=0,restUntil=0,paused=false,visible=true,raf=0,t0=null,elapsed=0;
+
+function bump(){cGo.textContent=String(routed);cStall.textContent=String(stalled)}
+function resetRun(){
+ for(const c of active)c.el.remove();
+ active=[];queue=CARDS.slice();spawnTimer=0;restUntil=0;
+ routed=0;stalled=0;bump();
+}
+function gates(){const H=lane.clientHeight;return[{y:H*GF.check,k:'check'},{y:H*GF.lock,k:'lock'},{y:H*GF.show,k:'show'},{y:H*GF.follow,k:'follow'}]}
+
+function spawn(plan){
+ const el=document.createElement('div');
+ el.className='proto';
+ el.innerHTML='<span class="dot"></span><span class="nm">'+plan.name+'</span><span class="stamp"></span>';
+ lane.appendChild(el);
+ const h=el.offsetHeight||40;
+ const y=-h-24;
+ el.style.transform='translate(-50%,'+y+'px)';
+ active.push({el,plan,h,y,gate:0,phase:'fall',hold:0,x:0,o:1});
+}
+
+function stamp(card,text,cls){
+ const s=card.el.querySelector('.stamp');
+ s.textContent=text;s.className='stamp '+cls;
+ card.h=card.el.offsetHeight||card.h;
+ requestAnimationFrame(()=>card.el.classList.add('stamped'));
+}
+
+function tick(dt){
+ if(restUntil>0){restUntil-=dt;if(restUntil<=0)resetRun();return}
+ const gs=gates();
+ spawnTimer-=dt;
+ if(queue.length&&spawnTimer<=0){spawn(queue.shift());spawnTimer=SPAWN}
+ for(const card of active){
+  if(card.phase==='fall'){
+   card.y+=SPEED*dt/1000;
+   const g=gs[card.gate];
+   if(g&&card.y+card.h/2>=g.y){
+    card.y=g.y-card.h/2;
+    card.phase='hold';card.hold=STAMP_PAUSE;
+    if(g.k==='check'){
+     if(card.plan.ok)stamp(card,'LIST READY','pass');
+     else stamp(card,card.plan.reason,'fail');
+    }else if(g.k==='lock'){stamp(card,'LOCKED IN','ship')}
+    else if(g.k==='show'){stamp(card,'LIVE','ship')}
+    else if(g.k==='follow'){stamp(card,'ROUTED','ship');routed++;bump()}
+    card.y=g.y-card.h/2;
+   }
+  }else if(card.phase==='hold'){
+   card.hold-=dt;
+   if(card.hold<=0){
+    const g=gs[card.gate];
+    if(g.k==='check'&&!card.plan.ok){card.phase='shelf';stalled++;bump()}
+    else if(g.k==='follow'){card.phase='fade'}
+    else{card.gate++;card.phase='fall'}
+   }
+  }else if(card.phase==='shelf'){
+   card.x+=70*dt/1000;card.o-=dt/700;
+   if(card.o<=0){card.phase='dead';card.el.remove()}
+  }else if(card.phase==='fade'){
+   card.y+=40*dt/1000;card.o-=dt/800;
+   if(card.o<=0){card.phase='dead';card.el.remove()}
+  }
+  if(card.phase!=='dead'){
+   card.el.style.transform='translate(calc(-50% + '+card.x.toFixed(1)+'px),'+card.y.toFixed(1)+'px)';
+   card.el.style.opacity=String(Math.max(card.o,0));
+  }
+ }
+ active=active.filter(c=>c.phase!=='dead');
+ if(!queue.length&&!active.length)restUntil=END_REST;
+}
+
+function frame(now){
+ if(t0===null){t0=now-elapsed;last=elapsed}
+ elapsed=now-t0;
+ const dt=Math.min(elapsed-last,100)||16;last=elapsed;
+ tick(dt);
+ raf=requestAnimationFrame(frame);
+}
+function canRun(){return !paused&&visible&&!document.hidden&&!rm.matches}
+function start(){if(!raf&&canRun()){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+if('IntersectionObserver' in window){
+ new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(lane);
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+btn.addEventListener('click',()=>{
+ paused=!paused;
+ btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+ btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+ paused?stop():start();
+});
+
+function applyMotionPref(){
+ if(rm.matches){stop();for(const c of active)c.el.remove();active=[];queue=[];showFinal()}
+ else{resetRun();start()}
+}
+if(rm.addEventListener)rm.addEventListener('change',applyMotionPref);
+else if(rm.addListener)rm.addListener(applyMotionPref);
+
+applyMotionPref();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07090c">
+<title>The savings only count if the member chooses</title>
+<meta name="description" content="A concept sketch of signal-timed member nudges for Garner Health. Fictional sample data. Not affiliated with Garner Health.">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#07090c;--card:#0f1418;--ink:#f2f6f4;--mu:#a8b3ad;--dim:#6b7672;--ln:rgba(255,255,255,.08);
+--ac:#00bd9d;--ac2:#8bf0d5;--acs:rgba(0,189,157,.15);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:16ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s4);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s6);background:radial-gradient(900px 480px at 78% 28%,rgba(0,189,157,.14),transparent 70%)}
+.lede{color:#d9e0dc;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:620px;margin-top:var(--s4)}
+
+/* the window widget */
+.win{position:relative;border:1px solid var(--ln);border-radius:18px;background:#0b0f12;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(0,189,157,.35)}
+.bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.bar i{width:10px;height:10px;border-radius:50%;background:#232a28;flex:0 0 10px}
+.bar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em}
+.bar .smp{margin-left:auto}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(139,240,213,.4);border-radius:5px;padding:4px 7px;white-space:nowrap}
+.modes{display:flex;gap:10px;padding:16px 18px 4px;flex-wrap:wrap}
+.md{min-height:44px;padding:0 18px;border-radius:99px;border:1px solid var(--ln);background:none;color:var(--mu);font:500 14px/1 var(--mono);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .2s,border-color .2s,background .2s}
+.md:hover{color:var(--ink);border-color:var(--dim)}
+.md.on{border-color:var(--ac);color:var(--ink);background:var(--acs)}
+.md:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.tl{padding:22px 22px 10px}
+.lane{position:relative;height:86px}
+.lane .base{position:absolute;left:0;right:0;top:32px;height:2px;background:#232a28;border-radius:2px}
+.fill{position:absolute;left:0;top:32px;height:2px;background:var(--ac);border-radius:2px;width:0}
+.mk{position:absolute;top:33px;left:0;width:0;height:0}
+.mk i{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;background:#39423f;border:2px solid #4a5450;transition:background .3s,border-color .3s,box-shadow .3s}
+.mk em{position:absolute;top:13px;left:0;transform:translateX(-50%);font:600 10.5px/1.2 var(--mono);font-style:normal;letter-spacing:.04em;color:var(--dim);text-align:center;white-space:nowrap;transition:color .3s}
+.mk.t2 em{top:31px}
+.mk.ndg em{top:auto;bottom:13px}
+.mk.e0 em{transform:translateX(-6px);text-align:left}
+.mk.e6 em{transform:translateX(calc(-100% + 6px));text-align:right}
+.js .mk.lit i{background:var(--ac);border-color:var(--ac2);box-shadow:0 0 12px rgba(0,189,157,.7)}
+.js .mk.lit em{color:var(--ink)}
+.mk.ndg i{border-radius:3px}
+.js .mk.ndg.lit i{background:var(--ac2);border-color:var(--ac2)}
+.js .mk.ndg.lit em{color:var(--ac2)}
+.js .mk.ndg.late.lit i{background:#8a7a4d;border-color:#c9b268;box-shadow:0 0 12px rgba(201,178,104,.6)}
+.js .mk.ndg.late.lit em{color:#c9b268}
+.head{display:none;position:absolute;top:33px;left:0;width:3px;height:16px;background:var(--ink);border-radius:2px;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(255,255,255,.5)}
+.js .head{display:block}
+.weeks{position:relative;height:14px;margin-top:4px;font:500 10.5px/1 var(--mono);color:var(--dim);letter-spacing:.04em}
+.weeks span{position:absolute;top:0;transform:translateX(-50%)}
+.weeks span:first-child{transform:translateX(-2px)}
+.weeks span:last-child{transform:translateX(calc(-100% + 2px))}
+.out{margin:14px 18px 20px;border:1px solid var(--ln);border-radius:14px;padding:16px 18px;min-height:104px;background:var(--card)}
+.out .tag{font:700 11px/1 var(--mono);letter-spacing:.1em;margin-bottom:8px;display:block;min-height:11px}
+.out.hit .tag{color:var(--ac2)}
+.out.miss .tag{color:#c9b268}
+.out p{font-size:15.5px;color:var(--mu);line-height:1.55}
+.out p b{color:var(--ink);font-weight:600}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.stat{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:26px 24px}
+.stat b{display:block;font-size:clamp(30px,3vw + 16px,44px);font-weight:700;letter-spacing:-.03em;color:var(--ac2);font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:8px;font-size:14.5px;color:var(--mu);line-height:1.5}
+.src{margin-top:var(--s4);font-size:12.5px;color:var(--dim)}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e6ecea;max-width:720px}
+
+/* machine */
+.steps{display:grid;gap:14px;margin-top:var(--s6)}
+.step{display:grid;grid-template-columns:64px 1fr;gap:18px;border:1px solid var(--ln);border-radius:16px;background:var(--card);padding:22px 24px}
+.step .n{font:600 13px/1 var(--mono);color:var(--ac2);letter-spacing:.08em;padding-top:4px}
+.step h3{font-size:19px;letter-spacing:-.01em;margin-bottom:6px;line-height:1.5}
+.step h3 .tg{display:inline-block;font:500 11px/1 var(--mono);color:var(--dim);border:1px solid var(--ln);border-radius:6px;padding:4px 7px;margin-left:10px;letter-spacing:0;vertical-align:2px;white-space:nowrap}
+.step p{color:var(--mu);font-size:15.5px;line-height:1.6;max-width:640px}
+
+/* signals */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:26px 24px;display:flex;flex-direction:column}
+.sig .lab{font:700 11px/1 var(--mono);letter-spacing:.12em;color:var(--ac2);margin-bottom:var(--s3)}
+.sig h3{font-size:18.5px;line-height:1.3;margin-bottom:10px}
+.sig .nudge{font-size:15px;color:var(--mu);line-height:1.6;margin-bottom:var(--s4)}
+.sig .nudge b{color:var(--ink);font-weight:600}
+.sig .foot{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sig .foot span{font:500 12.5px/1.4 var(--mono);color:var(--mu)}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d9e0dc;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(min-width:700px){
+.mk em,.weeks{font-size:11.5px}
+.out{min-height:92px}
+}
+@media(max-width:860px){
+.stats,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+.step{grid-template-columns:1fr;gap:8px}
+.step .n{padding-top:0}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.win{margin-top:40px;border-radius:16px}
+.bar{padding:14px 16px}
+.modes{padding:16px 16px 4px;gap:8px}
+.md{padding:0 16px;font-size:13.5px}
+.tl{padding:22px 20px 10px}
+.out{margin:14px 16px 18px;padding:16px;min-height:128px}
+.sub{font-size:17px}
+.stat{padding:22px 20px}
+.rule{font-size:17px;padding:22px}
+.step{padding:20px}
+.step h3 .tg{margin-left:0;margin-top:6px;display:table}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+.head{display:none!important}
+.fill{width:100%!important}
+.motionrow{display:none}
+.mk i,.mk em,.md{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>The savings only count if the member chooses.</h1>
+<p class="lede">Garner identifies the top 20% of doctors and covers members' out-of-pocket costs when they visit one. That value only exists inside the short window between a referral and a booked appointment.</p>
+
+<div class="win" id="win">
+<div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>care episode &middot; six weeks</span><em class="smp">SAMPLE</em></div>
+<div class="modes" role="group" aria-label="Outreach mode">
+<button class="md on" id="mBlast" type="button" aria-pressed="true">Blast cadence</button>
+<button class="md" id="mSignal" type="button" aria-pressed="false">Signal nudge</button>
+</div>
+<div class="tl" role="img" aria-label="Sample timeline of a six-week care episode. In blast cadence mode the nudge arrives at week six, after the appointment was booked at week two, and the moment is missed. In signal nudge mode the nudge arrives at week one, before booking, and the member finds a Top Provider.">
+<div class="lane" id="lane" aria-hidden="true">
+<div class="base"></div>
+<div class="fill" id="fill"></div>
+<div class="mk e0" data-w="0"><i></i><em>Referral issued</em></div>
+<div class="mk t2" data-w="2"><i></i><em>Appointment booked</em></div>
+<div class="mk" data-w="3"><i></i><em>Visit</em></div>
+<div class="mk" data-w="5"><i></i><em>Claim filed</em></div>
+<div class="mk ndg" id="ndg"><i></i><em id="ndgLab">Newsletter</em></div>
+<div class="head" id="head"></div>
+</div>
+<div class="weeks" aria-hidden="true"><span style="left:0">W0</span><span style="left:16.667%">W1</span><span style="left:33.333%">W2</span><span style="left:50%">W3</span><span style="left:66.667%">W4</span><span style="left:83.333%">W5</span><span style="left:100%">W6</span></div>
+</div>
+<div class="out miss" id="out">
+<span class="tag" id="outTag">MISSED MOMENT</span>
+<p id="outText"><b>The newsletter lands at week 6.</b> The appointment was booked at week 2. The data was right; the timing made it trivia.</p>
+</div>
+<p class="sr" id="live" aria-live="polite"></p>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<h2>Two calendars. One decides the outcome.</h2>
+<p class="sub">Benefits outreach runs on a quarterly beat: open enrollment, newsletters, renewal reminders. A care episode runs in weeks. When the nudge follows the benefits calendar, it arrives after the decision is made.</p>
+<div class="stats">
+<div class="stat"><b>Top 20%</b><span>of doctors Garner's data science identifies as Top Providers, the ones members get reimbursed for visiting</span></div>
+<div class="stat"><b>80% less</b><span>average out-of-pocket cost for members who see Top Providers, versus about half of members engaging at all</span></div>
+<div class="stat"><b>~10x</b><span>the engagement of a standard navigation product, per Garner's CEO, because the incentive is tied to the choice</span></div>
+</div>
+<p class="src">Public figures: getgarner.com/how-garner-works and Fierce Healthcare's Series D coverage. The timeline above is fictional sample data.</p>
+<div class="rule">The rule: outreach follows the care signal, not the campaign calendar. A referral issued is a sendable moment. A quarter is not.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<h2>Signals in, timed nudges out.</h2>
+<p class="sub">Sketched as an n8n workflow. Every stage earns its place by refusing to pass bad data along.</p>
+<div class="steps">
+<div class="step"><span class="n">01</span><div><h3>Ingest <span class="tg">n8n schedule trigger</span></h3><p>Eligibility and claims feeds land nightly, deduped into one record per member. Bad rows are quarantined with a reason, never silently dropped.</p></div></div>
+<div class="step"><span class="n">02</span><div><h3>Listen <span class="tg">webhook</span></h3><p>Care signals watched in near real time: a referral is issued, a provider search runs, an appointment gets booked. Each one opens a window.</p></div></div>
+<div class="step"><span class="n">03</span><div><h3>Verify <span class="tg">compliance gate</span></h3><p>Eligibility, consent and suppression lists checked before anything drafts. Stale or ineligible members never send, and every field carries a freshness timestamp.</p></div></div>
+<div class="step"><span class="n">04</span><div><h3>Draft <span class="tg">AI draft from the signal</span></h3><p>The nudge is built from the signal itself: the member's plan, nearby Top Providers, and the deadline the window gives it. No generic blast copy.</p></div></div>
+<div class="step"><span class="n">05</span><div><h3>Approve <span class="tg">Slack approval</span></h3><p>A human approves in Slack before anything sends. The machine finds the moment; a person owns the message.</p></div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<h2>Three signals. Three timed nudges.</h2>
+<p class="sub">Every signal, member and message below is fictional sample data, written to show timing doing the work.</p>
+<div class="sig">
+<div class="card"><span class="lab">SIGNAL 01</span><h3>Specialist referral issued</h3><p class="nudge"><b>The nudge:</b> "Your plan covers top-rated specialists near you. Here is where to start."</p><div class="foot"><span>Within 48 hours</span><em class="smp">SAMPLE</em></div></div>
+<div class="card"><span class="lab">SIGNAL 02</span><h3>Provider search, no booking</h3><p class="nudge"><b>The nudge:</b> "Still choosing? Two top-rated options are within 10 miles of you."</p><div class="foot"><span>Day 3</span><em class="smp">SAMPLE</em></div></div>
+<div class="card"><span class="lab">SIGNAL 03</span><h3>New plan year, no account</h3><p class="nudge"><b>The nudge:</b> "Your employer covers your costs at Top Providers. Set up your account in two minutes."</p><div class="foot"><span>Open enrollment, week 1</span><em class="smp">SAMPLE</em></div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">Start from the data the team already has. Make every signal explainable before it becomes an action.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All signals, timelines and sample figures are fictional.</span><span>Not affiliated with Garner Health.</span></div></footer>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const fill=$('fill'),head=$('head'),ndg=$('ndg'),ndgLab=$('ndgLab'),
+out=$('out'),outTag=$('outTag'),outText=$('outText'),live=$('live'),
+bBlast=$('mBlast'),bSignal=$('mSignal'),pz=$('pz');
+const evs=[...document.querySelectorAll('.mk[data-w]')],all=[...evs,ndg];
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+const MODES={
+blast:{ndgW:6,late:true,lab:'Newsletter',tag:'MISSED MOMENT',
+html:'<b>The newsletter lands at week 6.</b> The appointment was booked at week 2. The data was right; the timing made it trivia.'},
+signal:{ndgW:1,late:false,lab:'Referral nudge',tag:'MOMENT CAUGHT',
+html:'<b>The nudge lands at week 1.</b> Before the appointment is booked, while the member is still choosing. Timing turns the data into savings.'}
+};
+const W2X=w=>w/6*100,D=9000,HOLD=1600;
+let mode='blast',raf=0,paused=false,t0=0,elapsed=0,shown=false;
+
+function setNudge(){
+const m=MODES[mode];
+ndg.style.left=W2X(m.ndgW)+'%';
+ndgLab.textContent=m.lab;
+ndg.classList.toggle('late',m.late);
+ndg.classList.toggle('e6',m.ndgW===6);
+evs.forEach(k=>{k.style.left=W2X(+k.dataset.w)+'%'});
+}
+function showOut(announce){
+if(shown)return;shown=true;
+const m=MODES[mode];
+out.className='out '+(m.late?'miss':'hit');
+outTag.textContent=m.tag;outText.innerHTML=m.html;
+if(announce)live.textContent=m.tag+'. '+outText.textContent;
+}
+function showEnd(announce){
+all.forEach(k=>k.classList.add('lit'));
+fill.style.width='100%';head.style.left='100%';
+showOut(announce);
+}
+function render(ms){
+const t=Math.min(ms/D,1),e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,p=e*100;
+fill.style.width=p+'%';head.style.left=p+'%';
+const wNow=e*6,nw=MODES[mode].ndgW;
+all.forEach(k=>{
+const wk=k===ndg?nw:+k.dataset.w;
+k.classList.toggle('lit',wNow>=wk-.001);
+});
+if(t>=1)showOut(false);
+}
+function frame(now){
+if(t0===0)t0=now-elapsed;
+elapsed=now-t0;
+if(elapsed>=D+HOLD){t0=now;elapsed=0}
+render(Math.min(elapsed,D));
+raf=requestAnimationFrame(frame);
+}
+function start(){if(rm.matches||paused||raf)return;t0=0;raf=requestAnimationFrame(frame)}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+function replay(announce){
+stop();t0=0;elapsed=0;shown=false;
+out.className='out';outTag.textContent='';outText.innerHTML='';
+all.forEach(k=>k.classList.remove('lit'));
+setNudge();
+if(rm.matches||paused){showEnd(announce);return}
+if(announce)live.textContent='';
+start();
+if(announce)setTimeout(()=>{live.textContent=MODES[mode].tag+'. '+MODES[mode].html.replace(/<[^>]+>/g,'')},300);
+}
+function setMode(m){
+if(m===mode&&raf)return;
+mode=m;
+bBlast.classList.toggle('on',m==='blast');
+bSignal.classList.toggle('on',m==='signal');
+bBlast.setAttribute('aria-pressed',String(m==='blast'));
+bSignal.setAttribute('aria-pressed',String(m==='signal'));
+replay(true);
+}
+bBlast.addEventListener('click',()=>setMode('blast'));
+bSignal.addEventListener('click',()=>setMode('signal'));
+pz.addEventListener('click',()=>{
+paused=!paused;
+pz.setAttribute('aria-pressed',String(paused));
+pz.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+pz.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+paused?stop():start();
+});
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+const onRM=()=>replay(false);
+rm.addEventListener?rm.addEventListener('change',onRM):rm.addListener&&rm.addListener(onRM);
+replay(false);
+})();
+</script>
+</body>
+</html>

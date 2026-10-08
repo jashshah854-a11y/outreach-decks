@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0e13">
+<title>Nobody sees the gates. Everyone feels the misses.</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0b0e13;--bg2:#0e1218;--card:#11161e;--ink:#f4f7fa;--mu:#b6bfcb;--dim:#7e8a99;--ln:rgba(255,255,255,.09);
+--ac:#8ff5ff;--ac2:#00deec;--ac3:#9cb3ff;--ind:#6366f1;--acs:rgba(143,245,255,.14);
+--bad:#ff8a8a;--bads:rgba(255,138,138,.1);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:hidden;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac)}
+h1{font-size:clamp(38px,6.4vw + 14px,70px);line-height:1.02;letter-spacing:-.03em;font-weight:700;max-width:14ch;text-wrap:balance}
+h1 .thin{color:var(--mu);font-weight:450}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:620px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 82% 28%,rgba(0,222,236,.12),transparent 70%),radial-gradient(700px 420px at 12% 80%,rgba(99,102,241,.1),transparent 70%)}
+.lede{color:#dde5ee;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* gate board */
+.gates{position:relative;border:1px solid var(--ln);border-radius:18px;background:linear-gradient(180deg,#0f141b,var(--bg2));overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -44px rgba(0,222,236,.4),inset 0 1px 0 rgba(156,179,255,.06)}
+.gbar{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--ln)}
+.gbar i{width:10px;height:10px;border-radius:50%;background:#26313d;flex:0 0 10px}
+.gbar .ttl{margin-left:6px;font:500 12px/1.4 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.gbar .lamp{margin-left:auto;display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.gbar .dot{width:8px;height:8px;border-radius:50%;background:var(--ac2);box-shadow:0 0 10px rgba(0,222,236,.8)}
+.gbar .lamp.off .dot{background:var(--bad);box-shadow:0 0 10px rgba(255,138,138,.7)}
+.gbar .lamp em{font:600 11px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--mu);white-space:nowrap}
+.glist{position:relative;padding:10px 20px 22px;overflow:hidden}
+.beam{display:none}
+.js .beam{display:block;position:absolute;left:0;right:0;top:0;height:64px;transform:translateY(-70px);background:linear-gradient(180deg,rgba(143,245,255,0),rgba(143,245,255,.1) 55%,rgba(143,245,255,.26));border-bottom:2px solid var(--ac);box-shadow:0 2px 14px rgba(143,245,255,.4);pointer-events:none;will-change:transform;z-index:2;transition:opacity .3s ease}
+.gates.off .beam{opacity:0}
+.gate{position:relative;display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;padding:14px 4px;border-bottom:1px dashed rgba(255,255,255,.07)}
+.gate:last-child{border-bottom:0}
+.gate .t{min-width:0}
+.gate .t b{display:block;font-size:16px;font-weight:600;letter-spacing:-.01em}
+.gate .t span{display:block;font-size:13.5px;color:var(--dim);margin-top:2px;line-height:1.45}
+.st{justify-self:end;font:700 11px/1 var(--mono);letter-spacing:.1em;padding:8px 12px;border-radius:7px;white-space:nowrap;border:1px solid var(--ln);color:var(--dim);background:rgba(255,255,255,.02);transition:all .4s ease}
+.js .st{opacity:.75}
+.js .gate.pass .st{opacity:1;color:#062a2d;background:linear-gradient(180deg,var(--ac),var(--ac2));border-color:transparent;box-shadow:0 0 18px rgba(0,222,236,.35)}
+.js .gate.pass .t b{color:var(--ink)}
+.js .gate.held .st{opacity:1;color:#3a1414;background:var(--bad);border-color:transparent}
+.js .gate.held .t b{color:var(--mu)}
+.gfoot{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ln)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 22px;min-width:0}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 22px/1.1 var(--mono);color:var(--ink)}
+.gates.off .stat:first-child b{color:var(--bad)}
+.stat span{font-size:14px;color:var(--mu);line-height:1.35}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac);border:1px solid rgba(143,245,255,.4);border-radius:5px;padding:4px 7px;margin-top:2px}
+.ctls{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:var(--s3)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13.5px/1.2 var(--mono);padding:0 18px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:center}
+.btn:hover{color:var(--ink);border-color:var(--dim)}
+.btn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.btn.warn{border-color:rgba(255,138,138,.45);color:#ffc9c9}
+.btn.warn[aria-pressed="true"]{border-color:rgba(143,245,255,.45);color:var(--ac)}
+.btn svg{width:12px;height:12px;fill:currentColor;flex:0 0 12px}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;min-width:0}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no{background:#121419}
+.card.no .mark{color:var(--dim)}
+.card.yes{border-color:rgba(0,222,236,.32);background:linear-gradient(180deg,rgba(0,222,236,.05),transparent 60%),var(--card)}
+.card.yes .mark{color:var(--ac)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.card ul{list-style:none;margin-top:var(--s3)}
+.card li{position:relative;padding:8px 0 8px 26px;color:var(--mu);font-size:15.5px;line-height:1.5;border-top:1px solid var(--ln)}
+.card li::before{position:absolute;left:2px;top:11px;font-family:var(--mono);font-size:13px}
+.card.no li::before{content:"\00D7";color:var(--bad)}
+.card.yes li::before{content:"\2713";color:var(--ac)}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac2);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e9f4f6;max-width:720px}
+
+/* signals */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{display:flex;flex-direction:column}
+.sig .card .n{font:600 12px/1 var(--mono);color:var(--ac);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.sig .card h3{font-size:19px}
+.sig .card p{margin-bottom:var(--s4)}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.act b{display:block;color:var(--ac3);font:600 12px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#dde5ee;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+.ab .stack{font:500 13px/1.8 var(--mono);color:var(--ac3);letter-spacing:.04em;margin-top:var(--s3)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.gates{margin-top:40px;border-radius:16px}
+.gbar{padding:13px 14px;gap:8px}
+.gbar i{display:none}
+.gbar .ttl{margin-left:0;font-size:11px}
+.glist{padding:8px 14px 18px}
+.gate{grid-template-columns:1fr;gap:8px;padding:13px 2px}
+.st{justify-self:start}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.stat{padding:16px 16px}
+.stat b{font-size:19px}
+.stat span{font-size:13.5px}
+.ctls{justify-content:stretch}
+.ctls .btn{flex:1 1 auto}
+.rule{font-size:17px;padding:22px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+.js .beam{display:none}
+.ctls .pz{display:none}
+.js .gate .st{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Nobody sees the gates. <span class="thin">Everyone feels the misses.</span></h1>
+<p class="lede">A form that routes nowhere is not a conversion problem. It is a family that needed care and met silence.</p>
+
+<div class="gates" id="gates" role="img" aria-label="Illustration: six pre-launch gates for an ABA client campaign, each flipping from pending to passed as a scan beam sweeps the board. Sample figures: 0 leaked inquiries, 6 of 6 gates passed.">
+<div class="gbar" aria-hidden="true"><i></i><i></i><i></i><span class="ttl">launch gate board &middot; aba campaign</span><span class="lamp" id="lamp"><span class="dot"></span><em id="lampTx">GATES ON</em></span></div>
+<div class="glist" id="glist" aria-hidden="true">
+<div class="beam" id="beam"></div>
+<div class="gate" data-g><div class="t"><b>Intake routing set</b><span>Every form and call lands on the right intake desk, never in limbo.</span></div><span class="st">PENDING</span></div>
+<div class="gate" data-g><div class="t"><b>Phone parity</b><span>The same number on ads, site, and every local listing.</span></div><span class="st">PENDING</span></div>
+<div class="gate" data-g><div class="t"><b>Tracking clean</b><span>UTMs, pixels, and consent wired before a dollar is spent.</span></div><span class="st">PENDING</span></div>
+<div class="gate" data-g><div class="t"><b>Landing QA</b><span>Pages load, forms submit, everything holds up on a phone.</span></div><span class="st">PENDING</span></div>
+<div class="gate" data-g><div class="t"><b>Measurement guardrails</b><span>HIPAA-conscious reporting, no exposure in the data trail.</span></div><span class="st">PENDING</span></div>
+<div class="gate" data-g><div class="t"><b>Reporting locked</b><span>One definition of an inquiry, one cadence, one owner.</span></div><span class="st">PENDING</span></div>
+</div>
+<div class="gfoot" aria-hidden="true">
+<div class="stat"><b id="leak">0</b><span>inquiries leaked this month</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b><span id="passN">0</span>/6</b><span>gates passed</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<p class="sr" id="live" aria-live="polite"></p>
+<div class="ctls">
+<button class="btn warn" id="flip" type="button" aria-pressed="false"><span id="flipTx">See it without the gates</span></button>
+<button class="btn pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button>
+</div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>Eight disciplines, one engine, and a thousand small places to leak.</h2>
+<p class="sub">Higglo runs SEO, GEO, PR, CRO, UX, web, local, and paid as one system measured on qualified patient inquiries. A system like that holds together on ops discipline nobody sees.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; NO GATES</span><h3>Launch day, the usual way</h3><p>The campaign is live and the leaks start quiet.</p><ul><li>UTM names improvised per person, per day</li><li>Phone numbers mismatched across listings</li><li>Forms routing to nobody in particular</li><li>Reporting rebuilt from scratch each month</li></ul></div>
+<div class="card yes"><span class="mark">&#10003; GATES ON</span><h3>Launch day, the disciplined way</h3><p>Nothing spends until the checklist signs off.</p><ul><li>One naming convention, enforced at intake</li><li>Number parity audited across every listing</li><li>Every route tested before traffic arrives</li><li>One inquiry definition, one weekly read</li></ul></div>
+</div>
+<div class="rule">The rule: a campaign does not earn spend until every gate passes. The gates are the job.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>Three gates I would own on day one.</h2>
+<p class="sub">Built as n8n workflows on my own stack: watch the break, fix it before the report, prove it in the readout.</p>
+<div class="sig">
+<div class="card"><span class="n">GATE 01</span><h3>Pre-launch QA</h3><p>Before any spend, an automated checklist tests every form, route, number, and pixel. Nothing launches half-wired.</p><div class="act"><b>The ops play</b>One checklist per launch, run from ClickUp, results attached to the launch ticket.</div></div>
+<div class="card"><span class="n">GATE 02</span><h3>In-flight monitoring</h3><p>A daily workflow watches for dead forms, number drift, and tracking drop-offs. Alerts land in Slack the hour it breaks, not at month end.</p><div class="act"><b>The ops play</b>n8n jobs poll the live surfaces and page the owner when a gate regresses.</div></div>
+<div class="card"><span class="n">GATE 03</span><h3>Reporting cadence</h3><p>One definition of a qualified inquiry, one dashboard, one weekly read. No rebuilt decks, no disputed numbers.</p><div class="act"><b>The ops play</b>A single source of truth that updates itself, so the readout is a review, not a reconstruction.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations specialist in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design intake checks that keep every inquiry routed and accounted for.</p>
+<p class="stack">ClickUp &middot; n8n &middot; Slack</p>
+<p class="q">I start from the work a team already ships, and build the invisible discipline that keeps it from leaking.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All gates, counts and scenarios are fictional sample data.</span><span>Not affiliated with Higglo Digital.</span></div></footer>
+
+<script>
+(()=>{
+const board=document.getElementById('gates'),list=document.getElementById('glist'),beam=document.getElementById('beam'),
+btn=document.getElementById('pz'),flip=document.getElementById('flip'),flipTx=document.getElementById('flipTx'),
+lamp=document.getElementById('lamp'),lampTx=document.getElementById('lampTx'),live=document.getElementById('live'),
+gates=[...list.querySelectorAll('[data-g]')],passN=document.getElementById('passN'),leak=document.getElementById('leak');
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+let gatesOn=true,paused=false;
+
+function setGate(g,state){
+  const st=g.querySelector('.st');
+  g.classList.remove('pass','held');
+  if(state==='pass'){g.classList.add('pass');st.textContent='PASSED'}
+  else if(state==='held'){g.classList.add('held');st.textContent='HELD'}
+  else{st.textContent='PENDING'}
+}
+function countPass(){passN.textContent=String(gates.filter(g=>g.classList.contains('pass')).length)}
+function allPass(){gates.forEach(g=>setGate(g,'pass'));countPass()}
+
+const D=8000,SWEEP=.7,HOLD_END=.88,BAND=64;
+let marks=[],H=0,t0=null,elapsed=0,raf=0,visible=true;
+function measure(){
+  H=list.clientHeight;
+  const top=list.getBoundingClientRect().top;
+  marks=gates.map(g=>{const r=g.getBoundingClientRect();return r.top-top+r.height/2});
+}
+function render(ms){
+  const t=(ms%D)/D,p=Math.min(t/SWEEP,1);
+  const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+  const y=e*(H+BAND+6);
+  beam.style.transform='translateY('+(y-BAND)+'px)';
+  if(t<HOLD_END)gates.forEach((g,i)=>setGate(g,y>=marks[i]?'pass':'idle'));
+  countPass();
+}
+function frame(now){if(t0===null)t0=now-elapsed;elapsed=now-t0;render(elapsed);raf=requestAnimationFrame(frame)}
+function start(){if(!raf&&!paused&&visible&&gatesOn&&!document.hidden&&!rm.matches){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+measure();
+if('ResizeObserver' in window)new ResizeObserver(()=>{measure();if(!raf&&gatesOn&&!rm.matches)render(elapsed)}).observe(list);else addEventListener('resize',measure);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);
+if('IntersectionObserver' in window)new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(list);
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+let leakT=null,leakN=0;
+function gatesOff(){
+  stop();gatesOn=false;
+  board.classList.add('off');lamp.classList.add('off');lampTx.textContent='GATES OFF';
+  gates.forEach(g=>setGate(g,'held'));passN.textContent='0';
+  clearInterval(leakT);
+  if(rm.matches){leakN=14;leak.textContent='14'}
+  else{
+    leakN=0;leak.textContent='0';
+    leakT=setInterval(()=>{if(leakN<14){leakN++;leak.textContent=String(leakN)}else clearInterval(leakT)},420);
+  }
+  live.textContent='Gates off. All six gates held, sample leaked inquiries climb to 14.';
+  flipTx.textContent='Turn the gates back on';flip.setAttribute('aria-pressed','true');
+}
+function gatesOnFn(){
+  clearInterval(leakT);
+  gatesOn=true;
+  board.classList.remove('off');lamp.classList.remove('off');lampTx.textContent='GATES ON';
+  leakN=0;leak.textContent='0';
+  if(rm.matches){allPass()}
+  else if(paused){elapsed=D*.75;t0=null;render(elapsed)}
+  else{elapsed=0;t0=null;render(0);start()}
+  live.textContent='Gates on. Six of six gates pass, zero sample inquiries leaked.';
+  flipTx.textContent='See it without the gates';flip.setAttribute('aria-pressed','false');
+}
+flip.addEventListener('click',()=>{gatesOn?gatesOff():gatesOnFn()});
+
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.setAttribute('aria-pressed',String(paused));
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+
+function applyMotionPref(){
+  if(rm.matches){
+    stop();btn.style.display='none';
+    if(gatesOn)allPass();
+  }else{
+    btn.style.display='';
+    if(gatesOn){elapsed=0;render(0);start()}
+  }
+}
+if(rm.addEventListener)rm.addEventListener('change',applyMotionPref);else if(rm.addListener)rm.addListener(applyMotionPref);
+applyMotionPref();
+})();
+</script>
+</body>
+</html>

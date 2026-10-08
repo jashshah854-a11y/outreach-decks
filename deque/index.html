@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0908">
+<title>Your best pipeline is already running scans</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0b0908;--card:#171210;--ink:#f7f3ef;--mu:#b0a59b;--dim:#7d7167;--ln:rgba(255,255,255,.08);
+--ac:#cc463b;--ac2:#e06f65;--acs:rgba(204,70,59,.16);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-left)) 0 max(var(--pad),env(safe-area-inset-right))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 80% 30%,rgba(204,70,59,.14),transparent 70%)}
+.lede{color:#d8cfc6;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* the scan */
+.scan{position:relative;border:1px solid var(--ln);border-radius:18px;background:#0e0b09;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(204,70,59,.35)}
+.bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#2c2622;flex:0 0 10px}
+.bar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.code{position:relative;overflow:hidden;padding:22px 24px 26px;font:13px/1.9 var(--mono);color:#8d8177}
+.ln{position:relative;display:grid;grid-template-columns:22px auto 1fr;column-gap:14px;align-items:center;margin:0 -10px;padding:3px 10px;border-radius:8px;transition:background-color .4s ease}
+.ln>i{font-style:normal;color:#4d443c;text-align:right;user-select:none;-webkit-user-select:none}
+.ln .v{color:#c9bdb2;min-width:0;overflow-wrap:anywhere;transition:color .4s ease}
+.flag{justify-self:start;display:inline-block;font:700 10.5px/1 var(--mono);letter-spacing:.08em;color:#140c0a;background:var(--ac2);border-radius:5px;padding:5px 8px;white-space:nowrap}
+.js .flag{opacity:0;transform:translateX(-4px);transition:opacity .35s ease,transform .35s ease}
+.js .ln.hit .flag{opacity:1;transform:none}
+.js .ln.hit{background:rgba(204,70,59,.08)}
+.js .ln.hit .v{color:var(--ac2)}
+.beam{display:none}
+.js .beam{display:block;position:absolute;left:0;right:0;top:0;height:56px;transform:translateY(-60px);background:linear-gradient(180deg,rgba(204,70,59,0),rgba(204,70,59,.1) 55%,rgba(204,70,59,.26));border-bottom:2px solid var(--ac);box-shadow:0 2px 14px rgba(204,70,59,.45);pointer-events:none;will-change:transform}
+.sfoot{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ln)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 24px}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 20px/1.1 var(--mono);color:var(--ink)}
+.stat span{font-size:14px;color:var(--mu);line-height:1.3}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(224,111,101,.4);border-radius:5px;padding:4px 7px;margin-top:2px}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no{background:#120e0c}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#d8cfc6}
+.card.yes{border-color:rgba(204,70,59,.35)}
+.card.yes .mark{color:var(--ac2)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e8e0d8;max-width:720px}
+
+/* signals */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{display:flex;flex-direction:column}
+.sig .card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.sig .card h3{font-size:19px}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.sig .card p{margin-bottom:var(--s4)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d8cfc6;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:560px){
+.code{padding:20px 18px 22px;font-size:12.5px;line-height:1.65}
+.ln{grid-template-columns:18px minmax(0,1fr);column-gap:12px;padding:6px 10px}
+.flag{grid-column:2;margin-top:6px}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.scan{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.stat{padding:16px 18px}
+.stat b{font-size:18px}
+.stat span{font-size:13.5px}
+.rule{font-size:17px;padding:22px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+.js .beam{display:none}
+.motionrow{display:none}
+.js .flag{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Your best pipeline is already running scans.</h1>
+<p class="lede">Every axe scan is a buying signal most teams never read. This machine reads the loudest ones, without turning the community into a list.</p>
+
+<div class="scan" id="scan" role="img" aria-label="Illustration: an accessibility scan sweeps a checkout page and flags contrast, missing alt text and missing label violations. Sample figures: 1,284 scans this week, 37 accounts warming.">
+<div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>axe scan &middot; checkout flow</span></div>
+<div class="code" id="code" aria-hidden="true">
+<div class="beam" id="beam"></div>
+<div class="ln bad"><i>1</i><span class="v">&lt;button class="cta"&gt;Checkout&lt;/button&gt;</span><span class="flag">CONTRAST</span></div>
+<div class="ln bad"><i>2</i><span class="v">&lt;img src="hero.png"&gt;</span><span class="flag">NO ALT TEXT</span></div>
+<div class="ln"><i>3</i><span class="v">&lt;nav aria-label="Primary"&gt;</span></div>
+<div class="ln bad"><i>4</i><span class="v">&lt;input type="email" id="e"&gt;</span><span class="flag">NO LABEL</span></div>
+<div class="ln"><i>5</i><span class="v">&lt;footer&gt;&copy; 2026&lt;/footer&gt;</span></div>
+</div>
+<div class="sfoot" aria-hidden="true">
+<div class="stat"><b>1,284</b><span>scans this week</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b>37</b><span>accounts warming</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>The community is the moat. Spray it and the moat drains.</h2>
+<p class="sub">Developer trust is why axe-core shows up everywhere. That trust is the top of the funnel, and mining the download list is the fastest way to lose it.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE SPRAY</span><h3>Batch and blast the install base</h3><p>Email every npm downloader. Score every GitHub star. The fastest known way to turn advocates into ex-advocates.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE READ</span><h3>Let scan behavior raise its hand</h3><p>Watch for account-level patterns in how teams scan. Reach out once, with something relevant to what they just did. Then stop.</p></div>
+</div>
+<div class="rule">The rule: a scan earns one timely, relevant conversation, or it earns silence. Nothing in between becomes a campaign.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>Three signals. One conversation each.</h2>
+<p class="sub">Sketched as an n8n workflow: watch the signal, resolve it to an account, draft the one touch, hold it for a human.</p>
+<div class="sig">
+<div class="card"><span class="n">SIGNAL 01</span><h3>Scan velocity spike</h3><p>One team's scans jump an order of magnitude in a week. Nobody runs that many scans by accident. Someone is evaluating.</p><div class="act"><b>The touch</b>One note to the engineering lead, referencing their stack and the evaluation window. No sequence.</div></div>
+<div class="card"><span class="n">SIGNAL 02</span><h3>Enterprise domain in trial</h3><p>A large-company domain starts running DevTools trials across multiple repos. The interest is already departmental.</p><div class="act"><b>The touch</b>Route to an enterprise AE with the scan context attached, so the first call starts informed.</div></div>
+<div class="card"><span class="n">SIGNAL 03</span><h3>Repeat violations on money pages</h3><p>Checkout and signup flows failing the same scans for weeks. That is compliance risk with a deadline nobody set.</p><div class="act"><b>The touch</b>A risk-led note with the violation pattern. Useful even if they never buy.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">I start from the data a team already has, and make every signal explainable before it becomes an action.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All names, scores and signals are fictional sample data.</span><span>Not affiliated with Deque.</span></div></footer>
+
+<script>
+(()=>{
+const code=document.getElementById('code'),beam=document.getElementById('beam'),btn=document.getElementById('pz');
+const lines=[...code.querySelectorAll('.ln.bad')];
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+if(rm.matches){lines.forEach(l=>l.classList.add('hit'));return}
+
+const D=7000,SWEEP=.72,HOLD_END=.9,BAND=56;
+let marks=[],H=0,t0=null,elapsed=0,paused=false,raf=0,visible=true;
+
+function measure(){
+  H=code.clientHeight;
+  const top=code.getBoundingClientRect().top;
+  marks=lines.map(l=>{const r=l.querySelector('.v').getBoundingClientRect();return r.top-top+r.height/2});
+}
+measure();
+if('ResizeObserver' in window)new ResizeObserver(measure).observe(code);else addEventListener('resize',measure);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);
+
+function render(ms){
+  const t=(ms%D)/D;
+  const p=Math.min(t/SWEEP,1);
+  const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+  const y=e*(H+BAND+4);
+  beam.style.transform='translateY('+(y-BAND)+'px)';
+  for(let i=0;i<lines.length;i++){
+    lines[i].classList.toggle('hit',t<HOLD_END&&y>=marks[i]);
+  }
+}
+function frame(now){
+  if(t0===null)t0=now-elapsed;
+  elapsed=now-t0;
+  render(elapsed);
+  raf=requestAnimationFrame(frame);
+}
+function start(){if(!raf&&!paused&&visible){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(code);
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.setAttribute('aria-pressed',String(paused));
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+
+render(0);
+start();
+})();
+</script>
+</body>
+</html>

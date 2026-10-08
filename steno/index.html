@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0e0c">
+<title>You won the room. Now win the 48 hours.</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0a0e0c;--card:#101915;--ink:#f6f1e6;--mu:#bcb2a1;--dim:#7f7668;--ln:rgba(255,255,255,.08);
+--ac:#c9a35f;--ac2:#e2c07e;--acs:rgba(201,163,95,.16);
+--teal:#1f5e58;--teals:rgba(31,94,88,.2);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+h1{font-size:clamp(38px,6vw + 14px,70px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 80% 20%,rgba(201,163,95,.13),transparent 70%),radial-gradient(760px 460px at 0% 100%,var(--teals),transparent 70%)}
+.lede{color:#ded4c0;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* the clock */
+.clock{position:relative;border:1px solid var(--ln);border-radius:18px;background:linear-gradient(180deg,#0d1512,#0b110f);overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(201,163,95,.35)}
+.cbar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.cbar i{width:10px;height:10px;border-radius:50%;background:#2a2f27;flex:0 0 10px}
+.cbar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.cbar .smp{margin-left:auto}
+.cbody{padding:20px 18px 8px}
+.cbody svg{display:block;width:100%;height:auto}
+.cread{display:flex;align-items:baseline;gap:6px 14px;flex-wrap:wrap;padding:6px 24px 4px}
+.cread b{font:600 34px/1.1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.cread span{font-size:14px;color:var(--mu)}
+.cstat{padding:0 24px 6px;font-size:14px;color:var(--mu)}
+.cstat b{color:var(--ac2);font-weight:600}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(226,192,126,.4);border-radius:5px;padding:4px 7px;margin-top:2px;white-space:nowrap}
+.chips{display:flex;gap:10px;flex-wrap:wrap;padding:10px 24px 18px}
+.chip{font:500 12px/1.2 var(--mono);color:var(--dim);border:1px solid var(--ln);border-radius:999px;padding:9px 14px;transition:color .35s ease,border-color .35s ease,background-color .35s ease;white-space:nowrap}
+.js .chip.on{color:var(--ac2);border-color:rgba(226,192,126,.55);background:var(--acs)}
+.cfoot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--ln);padding:14px 18px}
+.seg{display:flex;border:1px solid var(--ln);border-radius:12px;overflow:hidden;max-width:100%}
+.seg button{appearance:none;background:none;border:0;color:var(--mu);font:600 13px/1.2 var(--mono);padding:8px 18px;min-height:44px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.seg button+button{border-left:1px solid var(--ln)}
+.seg button[aria-pressed="true"]{background:var(--acs);color:var(--ac2)}
+.seg button:focus-visible{outline:2px solid var(--ac2);outline-offset:-2px}
+.pz{margin-left:auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+.sweep{display:none}
+.js .sweep{display:block}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#ded4c0}
+.card.yes{border-color:rgba(201,163,95,.35);background:linear-gradient(160deg,rgba(31,94,88,.14),var(--card) 60%)}
+.card.yes .mark{color:var(--ac2)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#ece2cd;max-width:720px}
+
+/* engine */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{display:flex;flex-direction:column}
+.sig .card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.sig .card h3{font-size:19px}
+.sig .card p{margin-bottom:var(--s4)}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#ded4c0;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:560px){
+.cbody{padding:18px 12px 6px}
+.cread{padding:6px 18px 4px}
+.cstat{padding:0 18px 6px}
+.chips{padding:10px 18px 16px}
+.cread b{font-size:29px}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.clock{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.rule{font-size:17px;padding:22px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.pz{margin-left:0;width:100%;justify-content:center}
+.seg{width:100%}
+.seg button{flex:1 1 0;min-width:0;padding:8px 10px;font-size:12px;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+.js .sweep{display:none}
+.cfoot .pz{display:none}
+.js .chip{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>You won the room. Now win the 48 hours.</h1>
+<p class="lede">Your field team earns the handshake at the bar event. This machine earns the second conversation before the memory fades.</p>
+
+<div class="clock" id="clock" role="group" aria-label="48-hour follow-up clock, sample data">
+<div class="cbar"><i></i><i></i><i></i><span>follow-up clock &middot; post-event</span><em class="smp">SAMPLE</em></div>
+<div class="cbody" role="img" aria-label="Illustration: a 48-hour timeline showing reply probability decaying from 78 percent at the handshake to 11 percent when follow-up waits until day three. With same-night follow-up it holds at 61 percent. Sample data.">
+<svg viewBox="0 0 600 230" aria-hidden="true" focusable="false">
+<defs>
+<linearGradient id="warm" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#e2c07e" stop-opacity=".85"/>
+<stop offset="1" stop-color="#1f5e58" stop-opacity=".12"/>
+</linearGradient>
+<linearGradient id="coldw" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#7f7668" stop-opacity=".7"/>
+<stop offset="1" stop-color="#7f7668" stop-opacity=".08"/>
+</linearGradient>
+</defs>
+<g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="13" fill="#7f7668">
+<line x1="46" y1="30" x2="46" y2="190" stroke="rgba(255,255,255,.12)"/>
+<line x1="46" y1="190" x2="566" y2="190" stroke="rgba(255,255,255,.12)"/>
+<g text-anchor="end"><text x="40" y="35">100</text><text x="40" y="75">75</text><text x="40" y="115">50</text><text x="40" y="155">25</text><text x="40" y="195">0</text></g>
+<text x="46" y="214">0h</text><text x="306" y="214" text-anchor="middle">24h</text><text x="566" y="214" text-anchor="end">48h</text>
+</g>
+<g id="area"></g>
+<g id="curve"></g>
+<g id="flag"></g>
+<g id="sweep" class="sweep">
+<line id="swline" x1="46" y1="26" x2="46" y2="190" stroke="#e2c07e" stroke-width="2"/>
+<circle id="swdot" cx="46" cy="65" r="5.5" fill="#e2c07e" stroke="#0c1310" stroke-width="2"/>
+</g>
+</svg>
+</div>
+<div class="cread"><b id="rnum">78%</b><span id="rlbl">reply probability at the handshake</span></div>
+<p class="cstat" id="cstat">Status: <b>no follow-up in the 48-hour window</b> (sample)</p>
+<div class="chips" aria-hidden="true">
+<span class="chip" data-h="0">0h &middot; in the room</span>
+<span class="chip" data-h="24">24h &middot; window narrows</span>
+<span class="chip" data-h="48">48h &middot; memory fades</span>
+</div>
+<div class="cfoot">
+<div class="seg" role="group" aria-label="Follow-up scenario">
+<button type="button" id="sgSlow" aria-pressed="true">Day-three follow-up</button>
+<button type="button" id="sgFast" aria-pressed="false">Same-night follow-up</button>
+</div>
+<button class="pz" id="pz" type="button"><svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button>
+</div>
+</div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The gap</div>
+<h2>Field marketing is the relationship engine. The gap after it is where pipeline dies.</h2>
+<p class="sub">Attorneys buy from people they know, and your team is in the room at bar events, legal conferences, and networking gatherings across the country. The problem is what happens between "we were in the room" and "follow-up happened in 48 hours."</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE HANDSHAKE</span><h3>The conversation works</h3><p>The field team wins the room. Attorneys remember the talk. So do the three other vendors who scanned the same badges.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE 48 HOURS</span><h3>The follow-up wins the firm</h3><p>Scans land in the system the same night. The note goes out while the handshake is still warm, in the voice of the person they met.</p></div>
+</div>
+<div class="rule">The rule: a conversation that waits four days for follow-up is a donation to the booth next door.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The engine</div>
+<h2>Three steps. All inside the 48-hour window.</h2>
+<p class="sub">Sketched as an n8n workflow on a lean stack: n8n, ClickUp, and Slack. No spreadsheet limbo.</p>
+<div class="sig">
+<div class="card"><span class="n">STEP 01</span><h3>Capture at the badge</h3><p>Scans, QR codes, and roster imports land in ClickUp the same night the event ends, tagged by market and booth staffer.</p><div class="act"><b>The handoff</b>Every contact resolves to a territory and an owner before midnight, automatically.</div></div>
+<div class="card"><span class="n">STEP 02</span><h3>Draft in context</h3><p>n8n pulls the event, the conversation notes, and the attorney's practice area, then drafts the follow-up note for the person they met.</p><div class="act"><b>The touch</b>One personal note referencing the actual conversation. Never a drip sequence.</div></div>
+<div class="card"><span class="n">STEP 03</span><h3>Human approves in Slack</h3><p>The draft lands in a Slack channel for the booth staffer with a 48-hour countdown attached. Approve, edit, or hold.</p><div class="act"><b>The guardrail</b>Nothing sends without a human. The machine earns the timing; the person earns the trust.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">I start from the conversations a team already earned, and make sure none of them wait on a spreadsheet.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All figures and scenarios are fictional sample data.</span><span>Not affiliated with Steno.</span></div></footer>
+
+<script>
+(()=>{
+const rnum=document.getElementById('rnum'),rlbl=document.getElementById('rlbl'),cstat=document.getElementById('cstat'),
+area=document.getElementById('area'),curve=document.getElementById('curve'),
+flag=document.getElementById('flag'),
+swline=document.getElementById('swline'),swdot=document.getElementById('swdot'),
+btn=document.getElementById('pz'),sgSlow=document.getElementById('sgSlow'),sgFast=document.getElementById('sgFast');
+const chips=[...document.querySelectorAll('.chip')];
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+
+const X0=46,X1=566,Y0=30,Y1=190;
+const X=h=>X0+h/48*(X1-X0), Y=p=>Y1-p/100*(Y1-Y0);
+const SLOW=[[0,78],[6,61],[12,47],[24,31],[36,19],[48,11]];
+const FAST=[[0,78],[2,76],[6,74],[12,70],[24,66],[36,63],[48,61]];
+let pts=SLOW, mode='slow';
+
+function probAt(h){
+  for(let i=0;i<pts.length-1;i++){
+    const a=pts[i],b=pts[i+1];
+    if(h<=b[0]){const t=(h-a[0])/((b[0]-a[0])||1);return a[1]+(b[1]-a[1])*t}
+  }
+  return pts[pts.length-1][1];
+}
+function pts2str(p){return p.map(q=>X(q[0]).toFixed(1)+','+Y(q[1]).toFixed(1)).join(' ')}
+
+const FONT='font-family="ui-monospace,Menlo,Consolas,monospace" font-size="13"';
+function draw(){
+  const s=pts2str(pts);
+  area.innerHTML='<polygon points="'+s+' '+X1+','+Y1+' '+X0+','+Y1+'" fill="url(#'+(mode==='slow'?'coldw':'warm')+')"/>';
+  curve.innerHTML='<polyline points="'+s+'" fill="none" stroke="'+(mode==='slow'?'#7f7668':'#e2c07e')+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  if(mode==='slow'){
+    flag.innerHTML='<text x="'+(X1-8)+'" y="60" '+FONT+' fill="#7f7668" text-anchor="end">no follow-up in window</text>';
+  }else{
+    flag.innerHTML='<line x1="'+X(2)+'" y1="30" x2="'+X(2)+'" y2="190" stroke="#e2c07e" stroke-width="1.5" stroke-dasharray="5 4"/><text x="'+(X(2)+8)+'" y="46" '+FONT+' fill="#e2c07e">note sent 2h</text>';
+  }
+}
+
+const D=9000,HOLD=1500;
+let t0=null,elapsed=0,paused=false,raf=0,visible=true,lastP=-1,lastH=-1;
+function render(ms){
+  const total=D+HOLD;
+  let t=ms%total;
+  if(t>D)t=D;
+  const h=t/D*48,p=probAt(h);
+  const x=X(h),y=Y(p);
+  swline.setAttribute('x1',x);swline.setAttribute('x2',x);
+  swdot.setAttribute('cx',x);swdot.setAttribute('cy',y);
+  const pr=Math.round(p),hr=Math.round(h);
+  if(pr!==lastP){rnum.textContent=pr+'%';lastP=pr}
+  if(hr!==lastH){rlbl.textContent=hr===0?'reply probability at the handshake':'reply probability at hour '+hr;lastH=hr}
+  chips.forEach(c=>c.classList.toggle('on',h>=+c.dataset.h));
+}
+function frame(now){
+  if(t0===null)t0=now-elapsed;
+  elapsed=now-t0;
+  render(elapsed);
+  raf=requestAnimationFrame(frame);
+}
+function start(){if(!raf&&!paused&&visible&&!rm.matches&&!document.hidden){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+function setMode(m){
+  if(m===mode)return;
+  mode=m;pts=m==='slow'?SLOW:FAST;
+  sgSlow.setAttribute('aria-pressed',String(m==='slow'));
+  sgFast.setAttribute('aria-pressed',String(m==='fast'));
+  cstat.innerHTML=m==='slow'
+    ?'Status: <b>no follow-up in the 48-hour window</b> (sample)'
+    :'Status: <b>note sent at hour 2</b>, warmth holds at 61% (sample)';
+  draw();
+  elapsed=0;t0=null;lastP=-1;lastH=-1;
+  render(rm.matches?D:0);
+}
+sgSlow.addEventListener('click',()=>setMode('slow'));
+sgFast.addEventListener('click',()=>setMode('fast'));
+
+draw();
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(document.getElementById('clock'));
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+function applyMotionPref(){
+  if(rm.matches){stop();render(D)}
+  else{render(elapsed);start()}
+}
+if(rm.addEventListener)rm.addEventListener('change',applyMotionPref);
+else if(rm.addListener)rm.addListener(applyMotionPref);
+applyMotionPref();
+
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#070a12">
+<title>One number everyone trusts</title>
+<meta name="description" content="A concept sketch for reconciled marketing reporting: four channels, one agreed number. All figures are fictional sample data. Not affiliated with Vestwell.">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#070a12;--card:#0d1424;--ink:#f2f5fc;--mu:#9aa4bc;--dim:#6b7590;--ln:rgba(255,255,255,.09);
+--ac:#4d7bff;--ac2:#95d5ff;--acs:rgba(77,123,255,.14);
+--warn:#ffe74a;--warnink:#1c1705;--ok:#01cf76;--okink:#052314;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2);margin-bottom:var(--s3)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.06;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6;margin-top:var(--s3)}
+
+/* hero */
+.hero{padding:var(--s7) 0;background:radial-gradient(900px 480px at 85% 20%,rgba(77,123,255,.16),transparent 70%)}
+.lede{color:#d4dbe9;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:560px;margin-top:var(--s4)}
+
+/* the board */
+.board{position:relative;border:1px solid var(--ln);border-radius:18px;background:#0a0f1d;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(77,123,255,.4)}
+.bbar{display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid var(--ln)}
+.bbar i{width:10px;height:10px;border-radius:50%;background:#232b44;flex:0 0 10px}
+.bbar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.bbody{padding:26px 24px 28px}
+.bhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bhead h2{font-size:22px;margin:0}
+.smp{font:700 10px/1 var(--mono);letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(149,213,255,.4);border-radius:5px;padding:6px 9px;white-space:nowrap}
+.bq{color:var(--mu);font-size:16px;margin-top:var(--s2)}
+
+.rows{position:relative;overflow:hidden;margin-top:var(--s4);border-top:1px solid var(--ln)}
+.ch{padding:16px 0;border-bottom:1px solid var(--ln)}
+.ch-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.ch-name{font-weight:600;font-size:16px;min-width:0}
+.ch-val{font:600 clamp(22px,5.4vw,30px)/1.1 var(--mono);color:var(--ink);white-space:nowrap;transition:color .5s ease;font-variant-numeric:tabular-nums}
+.board.agreed .ch-val{color:var(--ok)}
+.ch-method{font-size:13.5px;color:var(--dim);margin-top:4px}
+.ch-adj{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.ch-adj:empty{margin-top:0}
+.adj{font:500 12.5px/1.5 var(--mono);color:var(--ac2);opacity:0;transform:translateY(3px)}
+.js .adj{transition:opacity .35s ease,transform .35s ease}
+.js .adj.on{opacity:1;transform:none}
+.adj b{font-weight:700;font-variant-numeric:tabular-nums}
+
+.sweep{display:none}
+.js .sweep{display:block;position:absolute;left:0;right:0;top:0;height:64px;opacity:0;transform:translateY(-70px);background:linear-gradient(180deg,rgba(77,123,255,0),rgba(77,123,255,.12) 55%,rgba(77,123,255,.3));border-bottom:2px solid var(--ac);box-shadow:0 2px 16px rgba(77,123,255,.5);pointer-events:none;will-change:transform}
+.js .sweep.go{animation:sweep .7s ease-out}
+@keyframes sweep{0%{transform:translateY(-70px);opacity:1}85%{opacity:1}100%{transform:translateY(var(--sweepH,500px));opacity:0}}
+
+.rules{margin-top:var(--s5)}
+.rlab{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2);margin-bottom:var(--s2)}
+.rule{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-top:1px solid var(--ln)}
+.rule .tx{flex:1;min-width:0}
+.rule .tx b{display:block;font-size:16px}
+.rule .tx span{display:block;font-size:14px;color:var(--mu);margin-top:5px;line-height:1.55}
+.rule .tx b .rstate{display:inline;font:700 11px/1 var(--mono);letter-spacing:.08em;color:var(--dim);margin:0 0 0 10px;text-transform:uppercase}
+.rule.on .tx b .rstate{color:var(--ok)}
+.sw{flex:0 0 auto;width:64px;height:48px;background:none;border:none;padding:9px 6px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sw:focus-visible{outline:2px solid var(--ac2);outline-offset:2px;border-radius:12px}
+.sw .trk{position:relative;display:block;width:52px;height:30px;border-radius:999px;background:#1a2340;border:1px solid var(--ln);transition:background-color .3s ease,border-color .3s ease}
+.sw .trk::after{content:"";position:absolute;top:3px;left:4px;width:22px;height:22px;border-radius:50%;background:#8b94ad;transition:left .3s ease,background-color .3s ease}
+.sw[aria-checked="true"] .trk{background:linear-gradient(90deg,var(--ac),#2e5ae0);border-color:rgba(77,123,255,.6)}
+.sw[aria-checked="true"] .trk::after{left:24px;background:#fff}
+
+.orderline{margin-top:var(--s4);padding:20px 22px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:16.5px;line-height:1.6;color:#dde4f2;max-width:680px}
+
+.sbar{display:flex;align-items:center;gap:12px 14px;flex-wrap:wrap;margin-top:var(--s5);padding:18px 22px;border:1px solid var(--ln);border-radius:14px;background:#0b1120}
+.pill{font:700 12px/1 var(--mono);letter-spacing:.1em;border-radius:7px;padding:9px 13px;background:var(--warn);color:var(--warnink);transition:background-color .4s ease,color .4s ease;white-space:nowrap}
+.board.agreed .pill{background:var(--ok);color:var(--okink)}
+.spread{font:500 14px/1.4 var(--mono);color:var(--mu);font-variant-numeric:tabular-nums}
+.anote{display:none;margin-left:auto;font-size:15px;color:var(--ok);font-weight:600}
+.board.agreed .anote{display:block}
+
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;display:flex;flex-direction:column}
+.card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.card h3{font-size:19px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+
+.after{margin-top:var(--s6);border:1px solid var(--ln);border-radius:18px;overflow:hidden;background:var(--card)}
+.after .row{padding:24px 28px;border-top:1px solid var(--ln)}
+.after .row:first-child{border-top:none}
+.after .row b{display:block;font-size:17px;margin-bottom:6px}
+.after .row span{color:var(--mu);font-size:16px;line-height:1.6}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d4dbe9;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.7;color:var(--dim);display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.board{margin-top:40px;border-radius:16px}
+.bbar{padding:14px 16px}
+.bbody{padding:22px 18px 24px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.after .row{padding:20px 22px}
+.orderline{font-size:16px;padding:18px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.sbar{padding:16px 18px}
+.anote{margin-left:0;flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){
+.js .sweep{display:none}
+.js .adj{transition:none}
+.ch-val,.pill,.sw .trk,.sw .trk::after{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Four dashboards. Four answers. Same question.</h1>
+<p class="lede">Every Vestwell channel reports a different count of new savers. Marketing ops needs one number everyone trusts.</p>
+
+<div class="board" id="board" role="region" aria-label="Reconciliation board, interactive sample">
+<div class="bbar" aria-hidden="true"><i></i><i></i><i></i><span>reconciliation board</span></div>
+<div class="bbody">
+<div class="bhead"><h2>The Monday number</h2><span class="smp">SAMPLE</span></div>
+<p class="bq">New savers in September. What did each channel report?</p>
+
+<div class="rows" id="rows">
+<div class="sweep" id="sweep" aria-hidden="true"></div>
+<div class="ch">
+<div class="ch-top"><span class="ch-name">Employer portal dashboard</span><span class="ch-val" id="v0">412,408</span></div>
+<div class="ch-method">counts logins created</div>
+<div class="ch-adj" id="a0"></div>
+</div>
+<div class="ch">
+<div class="ch-top"><span class="ch-name">Advisor partner feed</span><span class="ch-val" id="v1">398,115</span></div>
+<div class="ch-method">counts applications submitted</div>
+<div class="ch-adj" id="a1"></div>
+</div>
+<div class="ch">
+<div class="ch-top"><span class="ch-name">State program CSV export</span><span class="ch-val" id="v2">421,930</span></div>
+<div class="ch-method">funded rows, exported late</div>
+<div class="ch-adj" id="a2"></div>
+</div>
+<div class="ch">
+<div class="ch-top"><span class="ch-name">Payroll sync events</span><span class="ch-val" id="v3">406,772</span></div>
+<div class="ch-method">counts contribution events</div>
+<div class="ch-adj" id="a3"></div>
+</div>
+</div>
+
+<div class="rules" id="rules">
+<div class="rlab">Reconciliation rules</div>
+<div class="rule">
+<button class="sw" type="button" role="switch" aria-checked="false" data-rule="r1" aria-label="Rule 1: one definition of an active saver"><span class="trk" aria-hidden="true"></span></button>
+<div class="tx"><b>One definition<span class="rstate" aria-hidden="true">off</span></b><span>Active saver means a funded account, not a created login.</span></div>
+</div>
+<div class="rule">
+<button class="sw" type="button" role="switch" aria-checked="false" data-rule="r2" aria-label="Rule 2: one attribution window"><span class="trk" aria-hidden="true"></span></button>
+<div class="tx"><b>One window<span class="rstate" aria-hidden="true">off</span></b><span>A 30-day window by event date, not export date.</span></div>
+</div>
+<div class="rule">
+<button class="sw" type="button" role="switch" aria-checked="false" data-rule="r3" aria-label="Rule 3: dedupe on participant ID"><span class="trk" aria-hidden="true"></span></button>
+<div class="tx"><b>Dedupe key<span class="rstate" aria-hidden="true">off</span></b><span>Participant ID across channels, not channel counts.</span></div>
+</div>
+</div>
+
+<div class="orderline">Definitions first, windows second, identity third. That order is the system.</div>
+
+<div class="sbar">
+<span class="pill" id="pill">MISMATCH</span>
+<span class="spread" id="spread">Spread: 23,815</span>
+<span class="anote">One number. Four witnesses.</span>
+</div>
+<p class="sr" id="live" aria-live="polite"></p>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The machinery</div>
+<h2>What keeps the number agreed</h2>
+<p class="sub">Three components that hold after Monday, when nobody is watching the board.</p>
+<div class="sig">
+<div class="card"><span class="n">COMPONENT 01</span><h3>A metric dictionary</h3><p>Every KPI gets one owner, one definition, and one refresh SLA. No metric lives in two tools under two names.</p></div>
+<div class="card"><span class="n">COMPONENT 02</span><h3>An event log, not a report pile</h3><p>Channel feeds land as immutable events in one pipeline. Any number replays back to its source rows.</p></div>
+<div class="card"><span class="n">COMPONENT 03</span><h3>Dedupe before dashboards</h3><p>Identity resolution runs before any chart renders. The same saver never counts twice, and the rules stay visible.</p></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The payoff</div>
+<h2>What changes when the number holds</h2>
+<p class="sub">The meeting changes before the strategy does. Everyone plans from the same row.</p>
+<div class="after">
+<div class="row"><b>The Monday readout</b><span>Marketing, finance, and partnerships open the same page. The argument starts at what to do, not whose data to believe.</span></div>
+<div class="row"><b>The spend review</b><span>Channel ROI compares clean, because every channel was measured the same way. Budget moves to what compounds.</span></div>
+<div class="row"><b>The partner QBR</b><span>One reconciled number, no competing definitions. The partner brings questions instead of a counter-deck.</span></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA in ClickUp and Slack, and design scoring frameworks teams can read.</p>
+<p class="q">I start from the data a team already has, and make every signal explainable before it becomes an action.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All figures are fictional sample data.</span><span>Not affiliated with Vestwell.</span></div></footer>
+
+<script>
+(()=>{
+const board=document.getElementById('board'),rows=document.getElementById('rows'),sweep=document.getElementById('sweep');
+const pill=document.getElementById('pill'),spread=document.getElementById('spread'),live=document.getElementById('live');
+const btn=document.getElementById('pz');
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+const vals=[0,1,2,3].map(i=>document.getElementById('v'+i));
+
+const CH=[
+ {raw:412408,adj:{r1:-6204,r2:-3868,r3:0},labels:{r1:'unfunded logins removed',r2:'outside window removed'}},
+ {raw:398115,adj:{r1:-3988,r2:8209,r3:0},labels:{r1:'unfunded applications removed',r2:'late applications backdated'}},
+ {raw:421930,adj:{r1:-19594,r2:0,r3:0},labels:{r1:'unfunded rows removed'}},
+ {raw:406772,adj:{r1:-2210,r2:-1226,r3:-1000},labels:{r1:'unfunded events removed',r2:'outside window removed',r3:'cross-channel duplicates removed'}}
+];
+const on={r1:false,r2:false,r3:false};
+const state=CH.map(c=>({cur:c.raw,tgt:c.raw,from:c.raw,t0:0,dur:700}));
+let paused=false,raf=0;
+
+const still=()=>rm.matches||paused;
+function target(i){let v=CH[i].raw;for(const r in on)if(on[r])v+=CH[i].adj[r];return v}
+function fmt(n){return Math.round(n).toLocaleString('en-US')}
+function sgn(n){return (n>0?'+':'')+fmt(n)}
+function spreadOf(a){return Math.max(...a)-Math.min(...a)}
+function showSpread(){spread.textContent='Spread: '+fmt(spreadOf(state.map(s=>s.cur)))}
+
+function renderAdj(){
+ CH.forEach((c,i)=>{
+  const box=document.getElementById('a'+i);
+  const act=Object.keys(on).filter(r=>on[r]&&c.adj[r]!==0);
+  box.innerHTML=act.map(r=>'<span class="adj"><b>'+sgn(c.adj[r])+'</b> '+c.labels[r]+'</span>').join('');
+  if(!still()) requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   [...box.children].forEach((el,k)=>setTimeout(()=>el.classList.add('on'),k*90));
+  }));
+  else [...box.children].forEach(el=>el.classList.add('on'));
+ });
+}
+
+function updateAgreed(announce){
+ const ts=state.map(s=>s.tgt);
+ const agreed=ts.every(t=>t===ts[0]);
+ board.classList.toggle('agreed',agreed);
+ pill.textContent=agreed?'AGREED':'MISMATCH';
+ if(announce){
+  live.textContent=agreed
+   ?'Agreed. All four channels report '+fmt(ts[0])+' new savers.'
+   :'Mismatch. Channels report '+ts.map(fmt).join(', ')+'. Spread '+fmt(spreadOf(ts))+'.';
+ }
+}
+
+function fireSweep(){
+ sweep.style.setProperty('--sweepH',rows.clientHeight+'px');
+ sweep.classList.remove('go');void sweep.offsetWidth;sweep.classList.add('go');
+}
+
+function snap(){
+ state.forEach((s,i)=>{s.cur=s.tgt;s.from=s.tgt;vals[i].textContent=fmt(s.tgt)});
+ showSpread();
+}
+
+function frame(now){
+ let moving=false;
+ state.forEach((s,i)=>{
+  if(now<s.t0){vals[i].textContent=fmt(s.from);s.cur=s.from;moving=true;return}
+  const p=Math.min((now-s.t0)/s.dur,1);
+  const e=1-Math.pow(1-p,3);
+  s.cur=s.from+(s.tgt-s.from)*e;
+  vals[i].textContent=fmt(s.cur);
+  if(p<1)moving=true;
+ });
+ showSpread();
+ raf=(moving&&!paused)?requestAnimationFrame(frame):0;
+}
+function start(){if(!raf&&!still())raf=requestAnimationFrame(frame)}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+function plan(intro){
+ const now=performance.now();
+ state.forEach((s,i)=>{
+  s.from=intro?0:s.cur;
+  s.tgt=target(i);
+  s.t0=now+(intro?i*140:0);
+  s.dur=intro?900:650;
+ });
+ updateAgreed(!intro);
+ renderAdj();
+ if(still()){snap();return}
+ if(!intro)fireSweep();
+ start();
+}
+
+document.querySelectorAll('.sw').forEach(sw=>{
+ sw.addEventListener('click',()=>{
+  const r=sw.dataset.rule;
+  on[r]=!on[r];
+  sw.setAttribute('aria-checked',String(on[r]));
+  const rule=sw.closest('.rule');
+  rule.classList.toggle('on',on[r]);
+  rule.querySelector('.rstate').textContent=on[r]?'on':'off';
+  plan(false);
+ });
+});
+
+if('IntersectionObserver' in window){
+ new IntersectionObserver(es=>{es[0].isIntersecting?start():stop()}).observe(rows);
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+btn.addEventListener('click',()=>{
+ paused=!paused;
+ btn.setAttribute('aria-pressed',String(paused));
+ btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+ btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+ if(paused){
+  stop();snap();
+  sweep.classList.remove('go');
+  document.querySelectorAll('.adj').forEach(el=>el.classList.add('on'));
+ }
+});
+
+plan(true);
+})();
+</script>
+</body>
+</html>

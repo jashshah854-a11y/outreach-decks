@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0514">
+<title>Every call, routed in seconds. Every buyer, routed by hand.</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0a0514;--bg2:#0e0819;--card:#131022;--ink:#f6f1ff;--mu:#bfb3dd;--dim:#83769f;--ln:rgba(255,255,255,.08);
+--ac:#7a3df5;--ac2:#a578ff;--acs:rgba(122,61,245,.16);--mag:#e43cff;--teal:#3ae8d9;--amber:#f6c500;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px;--inset:34px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+h1{font-size:clamp(38px,6vw + 14px,72px);line-height:1.04;letter-spacing:-.032em;font-weight:720;max-width:14ch;text-wrap:balance}
+h1 .hl{color:var(--ac2)}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0;max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s6);background:
+radial-gradient(760px 420px at 85% 18%,rgba(122,61,245,.20),transparent 70%),
+radial-gradient(560px 380px at 8% 90%,rgba(228,60,255,.08),transparent 70%)}
+.lede{color:#d9d0f0;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:560px;margin-top:var(--s4)}
+
+/* routing room */
+.room{position:relative;border:1px solid var(--ln);border-radius:18px;background:var(--bg2);overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(122,61,245,.4)}
+.rhead{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.rhead i{width:10px;height:10px;border-radius:50%;background:#241d38;flex:0 0 10px}
+.rhead span{flex:1 1 auto;margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.lane{padding:22px 24px 8px;position:relative}
+.lane+.lane{border-top:1px solid var(--ln)}
+.ltag{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;margin-bottom:var(--s3)}
+.lname{font:700 11.5px/1.4 var(--mono);letter-spacing:.1em;min-width:0}
+.lane.a .lname{color:var(--ac2)}
+.lane.b .lname{color:var(--dim)}
+.tgrp{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto}
+.timer{font:600 13px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);min-width:6ch;text-align:right;white-space:nowrap}
+.lane.a .timer{color:var(--teal)}
+.lane.b .timer{color:var(--amber)}
+.smp{font:700 10px/1 var(--mono);letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(165,120,255,.4);border-radius:5px;padding:4px 7px;font-style:normal;white-space:nowrap}
+.track{position:relative;height:74px;margin-bottom:6px}
+.tin{position:absolute;top:0;bottom:0;left:var(--inset);right:var(--inset)}
+.rail,.fill{position:absolute;left:0;top:26px;height:2px;border-radius:2px}
+.rail{right:0;background:rgba(255,255,255,.1)}
+.lane.a .rail{background:rgba(122,61,245,.25)}
+.fill{width:0}
+.lane.a .fill{background:linear-gradient(90deg,var(--ac),var(--teal))}
+.lane.b .fill{background:linear-gradient(90deg,#5a4a20,var(--amber))}
+.node{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px}
+.node .dot{width:12px;height:12px;border-radius:50%;background:#2a2340;border:2px solid #3a2f5c;margin-top:21px;transition:background .35s,border-color .35s,box-shadow .35s}
+.node .nl{font:500 10.5px/1.2 var(--mono);color:var(--dim);letter-spacing:.04em;text-align:center;white-space:nowrap}
+.node.lit .dot{background:var(--ac);border-color:var(--ac2);box-shadow:0 0 12px rgba(122,61,245,.8)}
+.node.lit .nl{color:var(--ac2)}
+.node.stuck .dot{background:#3a3020;border-color:var(--amber);box-shadow:0 0 12px rgba(246,197,0,.55)}
+.node.stuck .nl{color:var(--amber)}
+.pkt{position:absolute;top:27px;left:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .25s}
+.lane.a .pkt{background:var(--teal);box-shadow:0 0 16px var(--teal)}
+.lane.b .pkt{background:var(--amber);box-shadow:0 0 16px rgba(246,197,0,.8)}
+.verdict{display:flex;align-items:center;padding:0 24px 20px;min-height:44px}
+.verdict .v{font:600 14px/1.4 var(--mono);opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.verdict .v.show{opacity:1;transform:none}
+.lane.a .verdict .v{color:var(--teal)}
+.lane.b .verdict .v{color:var(--amber)}
+.rctl{display:flex;align-items:center;gap:10px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--ln);flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 20px;border-radius:12px;font:600 14px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid transparent}
+.btn.go{background:var(--ac);color:#fff}
+.btn.go:hover{background:#8a4ff7}
+.btn.go:disabled{opacity:.45;cursor:default}
+.btn.pz{background:none;border-color:var(--ln);color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;min-width:44px}
+.btn.pz:hover{color:var(--ink);border-color:var(--dim)}
+.btn:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.btn svg{width:12px;height:12px;fill:currentColor;flex:0 0 12px}
+
+/* no-JS: show the finished comparison as a static diagram */
+html:not(.js) .rctl{display:none}
+html:not(.js) .verdict .v{opacity:1;transform:none}
+html:not(.js) .lane.a .fill{width:100%}
+html:not(.js) .lane.b .fill{width:66.667%}
+html:not(.js) .lane.b .pkt{opacity:1;left:66.667%}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;display:flex;flex-direction:column;min-width:0}
+.card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.card h3{font-size:19px;line-height:1.3;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6;margin-bottom:var(--s4)}
+.mech{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:14px;line-height:1.6;color:var(--mu)}
+.mech b{display:block;color:var(--ink);font-weight:600;margin-bottom:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.mech code{font-family:var(--mono);font-size:12.5px;color:var(--ac2);background:rgba(122,61,245,.1);padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+
+.callout{margin-top:var(--s6);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e6ddf8;max-width:720px}
+.callout b{color:var(--ac2)}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d9d0f0;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+footer span{min-width:0}
+
+@media(max-width:860px){
+.rules{grid-template-columns:minmax(0,1fr);gap:16px}
+.ab{grid-template-columns:minmax(0,1fr);gap:var(--s2)}
+section{padding:var(--s7) 0}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px;--inset:30px}
+.hero{padding:56px 0 var(--s5)}
+.lede{font-size:18px;margin-top:20px}
+.room{margin-top:40px;border-radius:16px}
+.rhead{padding:12px 16px}
+.lane{padding:18px 18px 6px}
+.lname{font-size:11px}
+.track{height:76px}
+.node .nl{font-size:10px}
+.verdict{padding:0 18px 16px}
+.verdict .v{font-size:13px}
+.rctl{padding:14px 18px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.callout{font-size:17px;padding:22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(prefers-reduced-motion:reduce){
+.rctl{display:none}
+.node .dot,.verdict .v,.pkt{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Every call, <span class="hl">routed in seconds.</span> Every buyer, routed by hand.</h1>
+<p class="lede">Talkdesk made routing a product. The funnel that feeds it still runs on exports and hope.</p>
+
+<div class="room" id="room" role="img" aria-label="Sample illustration comparing two routing lanes. Lane A, the product: a caller moves through intent, queue, and agent and is answered in 3.8 seconds. Lane B, the funnel: a buyer crawls through export and scoring and is still waiting for a rep after six days. All figures are fictional sample data.">
+<div class="rhead" aria-hidden="true"><i></i><i></i><i></i><span>one buyer &middot; two systems</span></div>
+
+<div class="lane a" aria-hidden="true">
+<div class="ltag"><span class="lname">LANE A &middot; THE PRODUCT</span><span class="tgrp"><em class="smp">SAMPLE</em><span class="timer" id="tA">3.8s</span></span></div>
+<div class="track"><div class="tin" id="trackA">
+<div class="rail"></div><div class="fill" id="fA"></div>
+<div class="node lit" style="left:0%"><span class="dot"></span><span class="nl">Caller</span></div>
+<div class="node lit" style="left:33.333%"><span class="dot"></span><span class="nl">Intent</span></div>
+<div class="node lit" style="left:66.667%"><span class="dot"></span><span class="nl">Queue</span></div>
+<div class="node lit" style="left:100%"><span class="dot"></span><span class="nl">Agent</span></div>
+<div class="pkt" id="pktA"></div>
+</div></div>
+<div class="verdict"><span class="v" id="vA">Answered in 3.8 seconds.</span></div>
+</div>
+
+<div class="lane b" aria-hidden="true">
+<div class="ltag"><span class="lname">LANE B &middot; THE FUNNEL</span><span class="tgrp"><em class="smp">SAMPLE</em><span class="timer" id="tB">6d 14h</span></span></div>
+<div class="track"><div class="tin" id="trackB">
+<div class="rail"></div><div class="fill" id="fB"></div>
+<div class="node stuck" style="left:0%"><span class="dot"></span><span class="nl">Buyer</span></div>
+<div class="node stuck" style="left:33.333%"><span class="dot"></span><span class="nl">Export</span></div>
+<div class="node stuck" style="left:66.667%"><span class="dot"></span><span class="nl">Score</span></div>
+<div class="node" style="left:100%"><span class="dot"></span><span class="nl">Rep queue</span></div>
+<div class="pkt" id="pktB"></div>
+</div></div>
+<div class="verdict"><span class="v" id="vB">Still waiting. Six days and counting.</span></div>
+</div>
+
+<div class="rctl">
+<button class="btn go" id="go" type="button">Route one buyer</button>
+<button class="btn pz" id="pz" type="button" aria-pressed="false" aria-label="Pause motion"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause</span></button>
+</div>
+</div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>The funnel deserves the same engineering as the floor.</h2>
+<p class="sub">Three routing rules, borrowed from the contact center and aimed at the buying journey. Sketched as n8n workflows, with review checkpoints held in Slack.</p>
+<div class="rules">
+<div class="card"><span class="n">RULE 01</span><h3>Route by intent, not by round-robin</h3><p>A demo request from an enterprise domain should skip the line the way a VIP caller skips the queue. Fit and behavior decide the route, not whose turn it is.</p><div class="mech"><b>The n8n sketch</b>Watch form and product signals. Resolve the account in <code>ClickUp</code>. Route to the right rep. Hold the summary in <code>Slack</code> for a human OK.</div></div>
+<div class="card"><span class="n">RULE 02</span><h3>Hold the funnel to a service level</h3><p>Every inbound gets a first response in minutes, measured and visible like any queue metric. A lead that waits a day is a caller who hung up.</p><div class="mech"><b>The n8n sketch</b>A timer starts on every new lead. Elapsed time posts to <code>Slack</code>. Breaches escalate like a missed SLA. The log lives in <code>ClickUp</code>.</div></div>
+<div class="card"><span class="n">RULE 03</span><h3>Contain the tire-kickers, free the closers</h3><p>Self-serve answers absorb the curious, the way a virtual agent absorbs the routine. Reps only take the conversations that need a human.</p><div class="mech"><b>The n8n sketch</b>Qualify before a rep is paged. Instant, useful replies for the rest. Every outcome recorded in <code>ClickUp</code> for the next route.</div></div>
+</div>
+<div class="callout">The idea is simple: <b>route the buyers coming to Talkdesk with the same care Talkdesk routes its callers.</b> The machinery already exists. It just needs to point inward.</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">I start from the systems a team already runs, and I make every route explainable before it becomes automatic.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All names, scores, timings and routes are fictional sample data.</span><span>Not affiliated with Talkdesk.</span></div></footer>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const go=$('go'),pz=$('pz'),room=$('room');
+if(!go||!pz||!room)return;
+const tA=$('tA'),tB=$('tB'),pktA=$('pktA'),pktB=$('pktB'),fA=$('fA'),fB=$('fB'),vA=$('vA'),vB=$('vB');
+const nodesA=[...$('trackA').querySelectorAll('.node')];
+const nodesB=[...$('trackB').querySelectorAll('.node')];
+const NODEX=[0,1/3,2/3,1];
+const DUR=9000,STALL=2/3,B_END=6*1440+14*60;
+const rm=window.matchMedia?matchMedia('(prefers-reduced-motion: reduce)'):{matches:false};
+const PAUSE_SVG='<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+const PLAY_SVG='<path d="M3 1.5v9l7.5-4.5z"/>';
+let raf=0,t0=null,elapsed=0,paused=false,running=false,visible=true;
+
+const easeIO=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const clamp=v=>Math.max(0,Math.min(1,v));
+function place(pkt,fill,p,show){pkt.style.left=(p*100)+'%';fill.style.width=(p*100)+'%';pkt.style.opacity=show?1:0}
+function fmtB(mins){mins=Math.floor(mins);return Math.floor(mins/1440)+'d '+Math.floor((mins%1440)/60)+'h'}
+function setPause(p){
+  paused=p;
+  pz.setAttribute('aria-pressed',String(p));
+  pz.setAttribute('aria-label',p?'Resume motion':'Pause motion');
+  pz.querySelector('span').textContent=p?'Resume':'Pause';
+  pz.querySelector('svg').innerHTML=p?PLAY_SVG:PAUSE_SVG;
+}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+function reset(){
+  stop();running=false;elapsed=0;t0=null;setPause(false);
+  tA.textContent='0.0s';tB.textContent='0d 0h';
+  vA.classList.remove('show');vB.classList.remove('show');
+  nodesA.forEach(n=>n.classList.remove('lit'));nodesB.forEach(n=>n.classList.remove('stuck'));
+  place(pktA,fA,0,false);place(pktB,fB,0,false);
+  nodesA[0].classList.add('lit');nodesB[0].classList.add('stuck');
+  go.disabled=false;go.textContent='Route one buyer';
+}
+function showFinal(){
+  stop();running=false;
+  tA.textContent='3.8s';tB.textContent=fmtB(B_END);
+  nodesA.forEach(n=>n.classList.add('lit'));
+  nodesB.forEach((n,i)=>n.classList.toggle('stuck',i<3));
+  place(pktA,fA,1,false);place(pktB,fB,STALL,true);
+  vA.classList.add('show');vB.classList.add('show');
+  go.disabled=false;go.textContent='Run it again';
+}
+function render(ms){
+  const t=clamp(ms/DUR);
+  const pa=easeIO(clamp(t/.28));
+  place(pktA,fA,pa,pa>0&&pa<1);
+  tA.textContent=(pa*3.8).toFixed(1)+'s';
+  NODEX.forEach((x,i)=>{if(pa>=x-.001)nodesA[i].classList.add('lit')});
+  if(pa>=1)vA.classList.add('show');
+  const pb=easeIO(clamp(t/.8))*STALL;
+  place(pktB,fB,pb,t>0);
+  tB.textContent=fmtB(t*B_END);
+  NODEX.forEach((x,i)=>{if(i<3&&pb>=x-.001)nodesB[i].classList.add('stuck')});
+  if(t>=1){showFinal();return false}
+  return true;
+}
+function frame(now){
+  if(t0===null)t0=now-elapsed;
+  elapsed=now-t0;
+  raf=0;
+  if(render(elapsed)&&running&&!paused&&visible)raf=requestAnimationFrame(frame);
+}
+function start(){if(!raf&&running&&!paused&&visible&&!document.hidden){t0=null;raf=requestAnimationFrame(frame)}}
+
+go.addEventListener('click',()=>{
+  if(rm.matches){showFinal();return}
+  reset();running=true;go.disabled=true;go.textContent='Routing\u2026';start();
+});
+pz.addEventListener('click',()=>{setPause(!paused);if(paused)stop();else start()});
+
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible)start();else stop()}).observe(room);
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start()});
+const onRM=()=>{if(rm.matches)showFinal()};
+if(rm.addEventListener)rm.addEventListener('change',onRM);else if(rm.addListener)rm.addListener(onRM);
+
+if(rm.matches)showFinal();else reset();
+})();
+</script>
+</body>
+</html>

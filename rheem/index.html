@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0e0a07">
+<title>Fifteen launches. One question: what actually moved?</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0e0a07;--card:#171009;--ink:#f8f3ec;--mu:#bfae97;--dim:#8a7763;--ln:rgba(255,255,255,.08);
+--ac:#d97e2e;--ac2:#eda75f;--acs:rgba(217,126,46,.16);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-left)) 0 max(var(--pad),env(safe-area-inset-right))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:15ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 80% 30%,rgba(217,126,46,.14),transparent 70%)}
+.lede{color:#e0d3c0;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* the readout */
+.scan{position:relative;border:1px solid var(--ln);border-radius:18px;background:#100b06;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(217,126,46,.35)}
+.bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.bar i{width:10px;height:10px;border-radius:50%;background:#33271a;flex:0 0 10px}
+.bar span{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0}
+.code{position:relative;overflow:hidden;padding:22px 24px 26px;font:13px/1.9 var(--mono);color:#97826d}
+.ln{position:relative;display:grid;grid-template-columns:22px auto 1fr;column-gap:14px;align-items:center;margin:0 -10px;padding:3px 10px;border-radius:8px;transition:background-color .4s ease}
+.ln>i{font-style:normal;color:#5a4a38;text-align:right;user-select:none;-webkit-user-select:none}
+.ln .v{color:#d3c2ab;min-width:0;overflow-wrap:anywhere;transition:color .4s ease}
+.flag{justify-self:start;display:inline-block;font:700 10.5px/1 var(--mono);letter-spacing:.08em;color:#170d04;background:var(--ac2);border-radius:5px;padding:5px 8px;white-space:nowrap}
+.flag.gap{color:#f8f3ec;background:none;border:1px solid rgba(237,167,95,.55)}
+.js .flag{opacity:0;transform:translateX(-4px);transition:opacity .35s ease,transform .35s ease}
+.js .ln.hit .flag{opacity:1;transform:none}
+.js .ln.hit{background:rgba(217,126,46,.08)}
+.js .ln.hit .v{color:var(--ac2)}
+.beam{display:none}
+.js .beam{display:block;position:absolute;left:0;right:0;top:0;height:56px;transform:translateY(-60px);background:linear-gradient(180deg,rgba(217,126,46,0),rgba(217,126,46,.1) 55%,rgba(217,126,46,.26));border-bottom:2px solid var(--ac);box-shadow:0 2px 14px rgba(217,126,46,.45);pointer-events:none;will-change:transform}
+.sfoot{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:1px solid var(--ln)}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 24px;min-width:0}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 20px/1.1 var(--mono);color:var(--ink)}
+.stat span{font-size:14px;color:var(--mu);line-height:1.3}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(237,167,95,.4);border-radius:5px;padding:4px 7px;margin-top:2px;white-space:nowrap}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2)}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;min-width:0}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no{background:#130d07}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#e0d3c0}
+.card.yes{border-color:rgba(217,126,46,.35)}
+.card.yes .mark{color:var(--ac2)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#efe3d2;max-width:720px}
+
+/* signals */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{display:flex;flex-direction:column}
+.sig .card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.sig .card h3{font-size:19px}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.sig .card p{margin-bottom:var(--s4)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* first build */
+.sketch{margin-top:var(--s6);border:1px solid rgba(217,126,46,.3);border-radius:18px;background:linear-gradient(180deg,rgba(217,126,46,.06),transparent 60%);padding:30px 28px}
+.sketch h3{font-size:21px;letter-spacing:-.01em;margin:var(--s2) 0}
+.sketch p{color:var(--mu);font-size:16px;line-height:1.6;max-width:640px}
+.sketch ul{list-style:none;margin-top:var(--s4);display:grid;gap:14px}
+.sketch li{display:flex;gap:12px;align-items:flex-start;font-size:16px;line-height:1.55;color:#e0d3c0}
+.sketch li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ac2);flex:0 0 8px;margin-top:8px}
+.sketch li>span{flex:1 1 auto;min-width:0}
+.sketch li .smp{margin-left:6px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#e0d3c0;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:560px){
+.code{padding:20px 18px 22px;font-size:12.5px;line-height:1.65}
+.ln{grid-template-columns:18px minmax(0,1fr);column-gap:12px;padding:6px 10px}
+.flag{grid-column:2;margin-top:6px}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.scan{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.stat{padding:16px 14px}
+.stat b{font-size:18px}
+.stat span{font-size:13px}
+.rule{font-size:17px;padding:22px 22px}
+.sketch{padding:24px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.sfoot{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){
+.js .beam{display:none}
+.motionrow{display:none}
+.js .flag{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Fifteen launches. One question: what actually moved?</h1>
+<p class="lede">AHR Expo put 15 new Rheem products into a contractor-driven channel. Every one of them is generating data right now, across contractors, distributors, and homeowners. The launches that win are the ones where somebody closes the loop.</p>
+
+<div class="scan" id="scan" role="img" aria-label="Illustration: a readout sweep checks five launch workstreams and closes the loop on three, flags one signal gap in contractor training, and leaves the distributor feed unreviewed. Sample figures: 3 loops closed, 1 signal gap, 12 days to first readout.">
+<div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>launch-readout &middot; q1 launches</span></div>
+<div class="code" id="code" aria-hidden="true">
+<div class="beam" id="beam"></div>
+<div class="ln bad"><i>1</i><span class="v">ProTerra hybrid heat pump</span><span class="flag">LOOP CLOSED</span></div>
+<div class="ln bad"><i>2</i><span class="v">AHR launch wave &middot; 15 products</span><span class="flag">LOOP CLOSED</span></div>
+<div class="ln"><i>3</i><span class="v">2035 sustainability roadmap</span></div>
+<div class="ln bad"><i>4</i><span class="v">contractor training cohort</span><span class="flag gap">SIGNAL GAP</span></div>
+<div class="ln"><i>5</i><span class="v">distributor sell-through feed</span></div>
+</div>
+<div class="sfoot" aria-hidden="true">
+<div class="stat"><b>3</b><span>loops closed</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b>1</b><span>signal gap</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b>12</b><span>days to first readout</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>The launch is the easy part. The readout is the job.</h2>
+<p class="sub">A manufacturer can ship 15 products in a week. Knowing which ones moved, through which dealers, and why, is a different machine entirely.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE LAUNCH REPORT</span><h3>Ship it and count the press</h3><p>The products go out, the coverage gets clipped, the team moves on. The data sits in three systems nobody joins, and next quarter starts from zero.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE LOOP</span><h3>Every launch gets a readout</h3><p>Contractor signal, distributor signal, homeowner signal, joined into one decision memo. What to push, what to fix, what to kill, all on one page.</p></div>
+</div>
+<div class="rule">The rule: a launch without a readout is a guess with a budget.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>Three layers. One memo.</h2>
+<p class="sub">Sketched as an n8n workflow: capture the signal at each layer, join it, write the one page that decides what happens next.</p>
+<div class="sig">
+<div class="card"><span class="n">LAYER 01</span><h3>The contractor layer</h3><p>What the installers actually pushed. Training attendance, quote rates, install feedback from the field. This is where a launch lives or dies, and it is the layer most dashboards never see.</p><div class="act"><b>In practice</b>Weekly field capture joined to the launch calendar, so every product has a contractor verdict within the first month.</div></div>
+<div class="card"><span class="n">LAYER 02</span><h3>The distributor layer</h3><p>What moved through the channel. Sell-through by region, stockout flags, reorder velocity. The numbers exist; they just live in five spreadsheets.</p><div class="act"><b>In practice</b>Distributor data landed in one table every Monday, with the deltas highlighted before anyone asks.</div></div>
+<div class="card"><span class="n">LAYER 03</span><h3>The homeowner layer</h3><p>What the end customer chose. Search demand, review sentiment, rebate redemptions. Demand signals mapped back to the launch that caused them.</p><div class="act"><b>In practice</b>A monthly demand read that names which launch drove which spike, in plain language.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The first build</div>
+<h2>Start with the memo, not the dashboard.</h2>
+<p class="sub">Dashboards sprawl. A one-page readout memo forces the question every launch has to answer: what do we do next.</p>
+<div class="sketch">
+<span class="k">Sketch</span>
+<h3>The launch readout memo</h3>
+<p>One page per launch: what shipped, what the three layers said, what happens next. This is a concept sketch with sample structure, not a claim about how Rheem works today.</p>
+<ul>
+<li><span>One memo per launch, written within 12 days of ship, from the three joined layers <em class="smp">SAMPLE</em></span></li>
+<li><span>Readout cadence: weekly during launch month, monthly after; the memo shrinks as the launch matures <em class="smp">SAMPLE</em></span></li>
+<li><span>Decision log: every push, fix, or kill call recorded with the signal that drove it <em class="smp">SAMPLE</em></span></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations and analytics analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and turn launch data into decision memos.</p>
+<p class="q">My lane is the loop: take the data a launch already generated and turn it into the one page that decides what happens next.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All scenarios and figures are fictional sample data.</span><span>Not affiliated with Rheem.</span></div></footer>
+
+<script>
+(()=>{
+const code=document.getElementById('code'),beam=document.getElementById('beam'),btn=document.getElementById('pz');
+const lines=[...code.querySelectorAll('.ln.bad')];
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+if(rm.matches){lines.forEach(l=>l.classList.add('hit'));return}
+
+const D=7000,SWEEP=.72,HOLD_END=.9,BAND=56;
+let marks=[],H=0,t0=null,elapsed=0,paused=false,raf=0,visible=true;
+
+function measure(){
+  H=code.clientHeight;
+  const top=code.getBoundingClientRect().top;
+  marks=lines.map(l=>{const r=l.querySelector('.v').getBoundingClientRect();return r.top-top+r.height/2});
+}
+measure();
+if('ResizeObserver' in window)new ResizeObserver(measure).observe(code);else addEventListener('resize',measure);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measure);
+
+function render(ms){
+  const t=(ms%D)/D;
+  const p=Math.min(t/SWEEP,1);
+  const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+  const y=e*(H+BAND+4);
+  beam.style.transform='translateY('+(y-BAND)+'px)';
+  for(let i=0;i<lines.length;i++){
+    lines[i].classList.toggle('hit',t<HOLD_END&&y>=marks[i]);
+  }
+}
+function frame(now){
+  if(t0===null)t0=now-elapsed;
+  elapsed=now-t0;
+  render(elapsed);
+  raf=requestAnimationFrame(frame);
+}
+function start(){if(!raf&&!paused&&visible){t0=null;raf=requestAnimationFrame(frame)}}
+function stop(){if(raf){cancelAnimationFrame(raf);raf=0}}
+
+if('IntersectionObserver' in window){
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;visible?start():stop()}).observe(code);
+}
+document.addEventListener('visibilitychange',()=>{document.hidden?stop():start()});
+
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.setAttribute('aria-pressed',String(paused));
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+
+render(0);
+start();
+})();
+</script>
+</body>
+</html>

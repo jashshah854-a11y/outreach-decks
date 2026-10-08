@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07080d">
+<title>Your Day 1 audit is right. And it is expiring.</title>
+<meta name="description" content="A concept sketch: turning a Day 1 audit into a weekly Engine Health Score for a revenue operations agency. All scores and scenarios are fictional sample data. Not affiliated with Nomad Marketing.">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#07080d;--panel:#0b0d15;--card:#101220;--ink:#f4f5fa;--mu:#a3a9bd;--dim:#767d95;--ln:rgba(255,255,255,.08);
+--vi:#7c3aed;--vi2:#a78bfa;--mt:#00f5a0;--mt2:rgba(0,245,160,.14);
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mt)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:14ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s6);background:radial-gradient(900px 480px at 80% 24%,rgba(124,58,237,.16),transparent 70%)}
+.lede{color:#d9dbe6;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* the heartbeat chart */
+.chart{position:relative;border:1px solid var(--ln);border-radius:18px;background:var(--panel);overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(124,58,237,.4);max-width:760px}
+.cbar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ln)}
+.cbar i{width:10px;height:10px;border-radius:50%;background:#232838;flex:0 0 10px}
+.cbar .ttl{margin-left:8px;font:500 12px/1.3 var(--mono);color:var(--dim);letter-spacing:.06em;min-width:0;flex:1 1 auto;overflow-wrap:anywhere}
+.cbar .wk{margin-left:auto;font:600 12px/1 var(--mono);color:var(--ink);letter-spacing:.08em;white-space:nowrap;flex:0 0 auto}
+.cwrap{padding:10px 8px 4px}
+.cwrap svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:10px 24px;padding:14px 20px 6px;font:500 12.5px/1.4 var(--mono);color:var(--mu)}
+.legend i{display:inline-block;width:26px;height:3px;border-radius:2px;margin-right:8px;vertical-align:middle}
+.cfoot{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--ln);margin-top:10px}
+.stat{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:18px 24px;min-width:0}
+.stat+.stat{border-left:1px solid var(--ln)}
+.stat b{font:600 20px/1.1 var(--mono);color:var(--ink);white-space:nowrap}
+.stat span{font-size:14px;color:var(--mu);line-height:1.3}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--mt);border:1px solid rgba(0,245,160,.4);border-radius:5px;padding:4px 7px;margin-top:2px}
+.motionrow{display:flex;justify-content:flex-end;margin-top:var(--s2);max-width:760px}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--mt);outline-offset:2px}
+.pz svg{display:block;width:12px;height:12px;fill:currentColor;flex:0 0 12px}
+
+/* drift cards */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.drift{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.dcard{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;display:flex;flex-direction:column;min-width:0}
+.dcard .n{font:600 12px/1 var(--mono);color:var(--vi2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.dcard h3{font-size:20px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.dcard p{color:var(--mu);font-size:15.5px;line-height:1.6}
+.dcard .tag{margin-top:auto;padding-top:var(--s4);font:700 10px/1 var(--mono);letter-spacing:.1em;color:var(--dim)}
+
+/* heartbeat steps */
+.steps{margin-top:var(--s6);position:relative}
+.step{display:grid;grid-template-columns:64px 1fr;gap:24px;padding:30px 0;border-top:1px solid var(--ln)}
+.step>div{min-width:0}
+.step:last-child{border-bottom:1px solid var(--ln)}
+.stn{font:600 15px/1 var(--mono);color:var(--mt);border:1px solid rgba(0,245,160,.35);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.step h3{font-size:21px;letter-spacing:-.01em;margin-bottom:8px}
+.step h3 .mono{font:600 12px/1 var(--mono);letter-spacing:.12em;color:var(--dim);text-transform:uppercase;display:block;margin-bottom:6px}
+.step p{color:var(--mu);font-size:16px;line-height:1.6;max-width:640px}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--mt);background:linear-gradient(90deg,var(--mt2),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#e6e8f0;max-width:720px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#d9dbe6;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.drift{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{grid-template-columns:1fr;gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.chart{margin-top:40px;border-radius:16px}
+.cbar{padding:14px 16px}
+.cbar i{display:none}
+.cbar .ttl{margin-left:0}
+.cwrap{padding:8px 4px 2px}
+.legend{padding:12px 16px 4px;gap:8px 18px;font-size:12px}
+.dcard{padding:24px 22px}
+.stat{padding:16px}
+.stat b{font-size:18px}
+.stat span{font-size:13.5px}
+.rule{font-size:17px;padding:22px}
+.step{grid-template-columns:44px 1fr;gap:16px;padding:26px 0}
+.step h3{font-size:19px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+}
+@media(max-width:340px){
+.cfoot{grid-template-columns:1fr}
+.stat+.stat{border-left:0;border-top:1px solid var(--ln)}
+}
+@media(prefers-reduced-motion:reduce){
+.motionrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>Your Day 1 audit is right. And it is expiring.</h1>
+<p class="lede">Every audit names the truth at a moment in time. A weekly heartbeat proves the engine is still aligned on day sixty.</p>
+
+<div class="chart" id="chart">
+<div class="cbar" aria-hidden="true"><i></i><i></i><i></i><span class="ttl">health score &middot; 12 wks</span><span class="wk" id="wk">WEEK 1</span></div>
+<div class="cwrap">
+<svg id="cv" viewBox="0 0 360 240" role="img" aria-label="Illustration with sample data: over 12 weeks, the Engine Health Score with audit only decays from 92 to 58, while the score with a weekly heartbeat holds between 90 and 93 and ends at 91.">
+<defs>
+<linearGradient id="zg" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0e1020"/><stop offset="1" stop-color="#0b0d15"/>
+</linearGradient>
+</defs>
+<rect x="0" y="0" width="360" height="240" fill="url(#zg)"/>
+<g id="grid" stroke="rgba(255,255,255,.06)" stroke-width="1"></g>
+<g id="bands" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="10.5" fill="#767d95"></g>
+<path id="lineAudit" d="" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="lineHeart" d="" fill="none" stroke="#00f5a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g id="dots"></g>
+<g id="ends" font-family="ui-monospace,Menlo,Consolas,monospace" font-size="11.5" font-weight="700"></g>
+</svg>
+</div>
+<div class="legend" aria-hidden="true">
+<span><i style="background:#a78bfa"></i>Audit only</span>
+<span><i style="background:#00f5a0"></i>With weekly heartbeat</span>
+</div>
+<div class="cfoot">
+<div class="stat"><b>92 &rarr; 58</b><span>after 12 weeks, audit only</span><em class="smp">SAMPLE</em></div>
+<div class="stat"><b>92 &rarr; 91</b><span>after 12 weeks, with heartbeat</span><em class="smp">SAMPLE</em></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button"><svg id="pzi" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The gap</div>
+<h2>Three ways the audit expires.</h2>
+<p class="sub">Nothing breaks loudly. Each drift is small, and each one compounds until the audit describes a system that no longer exists.</p>
+<div class="drift">
+<div class="dcard"><span class="n">DRIFT 01</span><h3>Routing rules age</h3><p>A rule added in week three quietly misassigns a slice of demo requests. The dashboard still counts them as inbound, so nobody looks.</p><span class="tag">SAMPLE SCENARIO</span></div>
+<div class="dcard"><span class="n">DRIFT 02</span><h3>Tracking decays</h3><p>A new form ships in week six without the UTM map. Attribution keeps running on schedule. It is just quietly wrong.</p><span class="tag">SAMPLE SCENARIO</span></div>
+<div class="dcard"><span class="n">DRIFT 03</span><h3>Scoring goes stale</h3><p>Thresholds tuned in the audit keep scoring a market that moved in week nine. Yesterday's model grades today's buyers.</p><span class="tag">SAMPLE SCENARIO</span></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>One score. Every Monday.</h2>
+<p class="sub">An Engine Health Score that turns the Day 1 audit into a standing heartbeat, built from the systems the client already runs.</p>
+<div class="steps">
+<div class="step"><div class="stn">1</div><div><h3><span class="mono">Pull</span>Read the systems you already have</h3><p>An n8n workflow pulls weekly, read-only exports from the platforms the client already runs. No new instrumentation, no migration, no rip and replace.</p></div></div>
+<div class="step"><div class="stn">2</div><div><h3><span class="mono">Score</span>Five inputs, one number</h3><p>The same formula every week: routing accuracy, tracking coverage, scoring stability, data hygiene, attribution sanity. One composite, five explainable parts.</p></div></div>
+<div class="step"><div class="stn">3</div><div><h3><span class="mono">Act</span>Route the fix before the quarter notices</h3><p>The score lands in ClickUp each Monday. Any input that crosses its band pings Slack with the fix and the owner, so drift gets caught in days, not discovered in the next audit.</p></div></div>
+</div>
+<div class="rule">The rule: an audit should never be the last measurement. It should be the first one, repeated weekly until the next audit makes it better.</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I build n8n workflow automations, run campaign operations and QA, and design scoring frameworks for partnership programs.</p>
+<p class="q">I start from the systems a team already has, and I measure what matters before I recommend anything new.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All scores, drift events and scenarios are fictional sample data.</span><span>Not affiliated with Nomad Marketing.</span></div></footer>
+
+<script>
+(()=>{
+const wk=document.getElementById('wk'),btn=document.getElementById('pz'),pzi=document.getElementById('pzi');
+const NS='http://www.w3.org/2000/svg';
+const W=360,H=240,PL=32,PR=32,PT=16,PB=30;
+const yMin=40,yMax=100;
+const audit=[92,90,87,83,79,74,70,66,63,60,59,58];
+const heart=[92,93,91,92,90,91,93,90,92,91,93,91];
+const events=[2,5,8];
+const X=i=>PL+(W-PL-PR)*(i/11);
+const Y=v=>PT+(H-PT-PB)*(1-(v-yMin)/(yMax-yMin));
+const path=d=>d.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ');
+const lineA=document.getElementById('lineAudit'),lineB=document.getElementById('lineHeart');
+lineA.setAttribute('d',path(audit));lineB.setAttribute('d',path(heart));
+const LA=lineA.getTotalLength(),LB=lineB.getTotalLength();
+const grid=document.getElementById('grid'),bands=document.getElementById('bands');
+function el(tag,attrs,txt){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(txt!=null)e.textContent=txt;return e}
+[40,60,80,100].forEach(v=>{
+const y=Y(v);
+grid.appendChild(el('line',{x1:PL,y1:y.toFixed(1),x2:W-PR,y2:y.toFixed(1)}));
+bands.appendChild(el('text',{x:PL-6,y:(y+3.5).toFixed(1),'text-anchor':'end'},v));
+});
+[[0,'W1'],[5,'W6'],[11,'W12']].forEach(([i,t])=>{
+bands.appendChild(el('text',{x:X(i).toFixed(1),y:H-10,'text-anchor':'middle'},t));
+});
+const dots=document.getElementById('dots'),ends=document.getElementById('ends');
+const evs=events.map(i=>{const c=el('circle',{cx:X(i).toFixed(1),cy:Y(audit[i]).toFixed(1),r:4.5,fill:'#0b0d15',stroke:'#a78bfa','stroke-width':2.5,opacity:0});c.dataset.i=i;dots.appendChild(c);return c});
+const endA=el('text',{x:X(11)+6,y:(Y(58)+4).toFixed(1),fill:'#a78bfa',opacity:0},'58');
+const endB=el('text',{x:X(11)+6,y:(Y(91)+4).toFixed(1),fill:'#00f5a0',opacity:0},'91');
+ends.appendChild(endA);ends.appendChild(endB);
+
+lineA.style.strokeDasharray=LA;lineB.style.strokeDasharray=LB;
+function draw(p){
+lineA.style.strokeDashoffset=LA*(1-p);
+lineB.style.strokeDashoffset=LB*(1-p);
+const pos=p*11;
+wk.textContent='WEEK '+(Math.floor(pos+1e-6)+1);
+evs.forEach(c=>c.setAttribute('opacity',pos>=+c.dataset.i?'1':'0'));
+const done=p>=.999?'1':'0';endA.setAttribute('opacity',done);endB.setAttribute('opacity',done);
+}
+
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+if(rm.matches){draw(1);return}
+
+const D=11000,HOLD=3000,CYCLE=D+HOLD;
+let paused=false,last=null,elapsed=0,raf=0;
+function render(ts){
+if(last===null)last=ts;
+elapsed+=ts-last;last=ts;
+draw(Math.min(1,(elapsed%CYCLE)/D));
+raf=requestAnimationFrame(render);
+}
+raf=requestAnimationFrame(render);
+const PAUSE='<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+const PLAY='<path d="M3 1.5v9a.6.6 0 0 0 .9.5l7-4.5a.6.6 0 0 0 0-1l-7-4.5a.6.6 0 0 0-.9.5z"/>';
+btn.addEventListener('click',()=>{
+paused=!paused;
+btn.querySelector('span').textContent=paused?'Play motion':'Pause motion';
+pzi.innerHTML=paused?PLAY:PAUSE;
+if(paused){cancelAnimationFrame(raf)}else{last=null;raf=requestAnimationFrame(render)}
+});
+rm.addEventListener&&rm.addEventListener('change',e=>{if(e.matches){cancelAnimationFrame(raf);paused=true;draw(1)}});
+})();
+</script>
+</body>
+</html>

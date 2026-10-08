@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0f0a0e">
+<title>One launch. Five doors. One date.</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+:root{
+--bg:#0f0a0e;--card:#181017;--ink:#fdf8fa;--mu:#cdb6be;--dim:#8d747f;--ln:rgba(255,255,255,.08);
+--ac:#e2608a;--ac2:#f294b0;--acdeep:#8e394f;--acs:rgba(226,96,138,.16);
+--ok:#8fd6a0;--warn:#eec27f;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+--s1:8px;--s2:12px;--s3:16px;--s4:24px;--s5:32px;--s6:48px;--s7:72px;--s8:104px;
+--pad:28px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-wrap:break-word;overflow-x:clip}
+.w{max-width:1060px;margin:0 auto;padding:0 max(var(--pad),env(safe-area-inset-right)) 0 max(var(--pad),env(safe-area-inset-left))}
+.k{font:600 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ac2)}
+h1{font-size:clamp(36px,6vw + 14px,68px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:14ch;text-wrap:balance}
+h2{font-size:clamp(28px,2.6vw + 14px,42px);line-height:1.12;letter-spacing:-.02em;font-weight:650;margin:var(--s3) 0 var(--s3);max-width:22ch;text-wrap:balance}
+.sub{color:var(--mu);font-size:18px;max-width:600px;line-height:1.6}
+
+/* hero */
+.hero{padding:var(--s7) 0 var(--s7);background:radial-gradient(900px 480px at 78% 26%,rgba(226,96,138,.16),transparent 70%),radial-gradient(600px 380px at 12% 78%,rgba(142,57,79,.18),transparent 70%)}
+.lede{color:#e3d2d8;font-size:clamp(18px,1vw + 14px,22px);line-height:1.55;max-width:600px;margin-top:var(--s4)}
+
+/* launch board */
+.board{border:1px solid var(--ln);border-radius:18px;background:#100b10;overflow:hidden;margin-top:var(--s6);box-shadow:0 30px 80px -40px rgba(226,96,138,.4);max-width:100%}
+.bhead{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--ln);flex-wrap:wrap}
+.bhead .dots{display:flex;gap:8px}
+.bhead .dots i{width:10px;height:10px;border-radius:50%;background:#33262d;flex:0 0 10px}
+.bhead .t{font:600 12px/1.3 var(--mono);letter-spacing:.1em;color:var(--dim);min-width:0}
+.bhead .smp{margin-left:auto}
+.count{display:flex;gap:10px;align-items:stretch;padding:22px 22px 6px;flex-wrap:wrap}
+.cbox{flex:1 1 0;min-width:60px;background:#150d13;border:1px solid var(--ln);border-radius:12px;padding:12px 6px;text-align:center}
+.cbox b{display:block;font:700 clamp(22px,5.4vw,34px)/1.1 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.cbox span{display:block;margin-top:6px;font:600 10px/1 var(--mono);letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.clab{width:100%;font:600 11px/1.4 var(--mono);letter-spacing:.14em;color:var(--ac2);text-transform:uppercase;padding:14px 22px 0}
+.lanes{padding:8px 12px 14px}
+.lane{border:1px solid var(--ln);border-radius:12px;margin-top:10px;background:#140c12;overflow:hidden}
+.lane>button{all:unset;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;width:100%;padding:14px 16px;cursor:pointer;min-height:44px;-webkit-tap-highlight-color:transparent;box-sizing:border-box}
+.lane>button:focus-visible{outline:2px solid var(--ac2);outline-offset:-2px;border-radius:12px}
+.lname{font:600 15px/1.35 var(--mono);color:var(--ink);display:flex;align-items:center;gap:10px;min-width:0;overflow-wrap:anywhere}
+.dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px}
+.dot.r{background:var(--ok)}
+.dot.v{background:var(--warn)}
+.dot.b{background:var(--ac);animation:pulse 1.8s ease-in-out infinite}
+body.frozen .dot.b{animation-play-state:paused}
+.pill{font:700 10.5px/1 var(--mono);letter-spacing:.1em;padding:7px 10px;border-radius:999px;white-space:nowrap;border:1px solid transparent}
+.pill.r{color:#0e2415;background:rgba(143,214,160,.92)}
+.pill.v{color:#2b1f08;background:rgba(238,194,127,.92)}
+.pill.b{color:#fff;background:var(--acdeep);border-color:rgba(226,96,138,.5)}
+.track{grid-column:1/-1;height:6px;border-radius:4px;background:#241820;overflow:hidden;margin-top:4px}
+.fill{display:block;height:100%;width:var(--w);border-radius:4px;background:linear-gradient(90deg,var(--acdeep),var(--ac))}
+.js .fill{width:0;transition:width 1.6s cubic-bezier(.2,.7,.2,1)}
+.js .fill.go{width:var(--w)}
+.lane.ok .fill{background:linear-gradient(90deg,#3d7a52,var(--ok))}
+.lane.warn .fill{background:linear-gradient(90deg,#a97c2e,var(--warn))}
+.js .lane .detail{max-height:0;overflow:hidden;visibility:hidden;transition:max-height .38s ease,visibility 0s linear .38s}
+.js .lane.open .detail{max-height:420px;visibility:visible;transition:max-height .38s ease}
+.detail p{padding:2px 16px 16px;font-size:14.5px;line-height:1.55;color:var(--mu)}
+.detail p b{color:var(--ink);font-weight:600}
+.motionrow{display:none;justify-content:flex-end;margin-top:var(--s2)}
+.js .motionrow{display:flex}
+.pz{display:inline-flex;align-items:center;gap:8px;min-height:44px;min-width:44px;background:none;border:1px solid var(--ln);border-radius:10px;color:var(--mu);font:500 13px/1 var(--mono);padding:0 16px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pz:hover{color:var(--ink);border-color:var(--dim)}
+.pz:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.pz svg{width:12px;height:12px;fill:currentColor}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(226,96,138,.55)}50%{box-shadow:0 0 0 7px rgba(226,96,138,0)}}
+.smp{font:700 10px/1 var(--mono);font-style:normal;letter-spacing:.1em;color:var(--ac2);border:1px solid rgba(242,148,176,.4);border-radius:5px;padding:4px 7px}
+
+/* sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--ln)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:var(--s6)}
+.card{border:1px solid var(--ln);border-radius:18px;background:var(--card);padding:30px 28px;min-width:0}
+.card .mark{font:700 13px/1 var(--mono);letter-spacing:.1em;margin-bottom:var(--s3);display:block}
+.card.no{background:#130d11}
+.card.no .mark{color:var(--dim)}
+.card.no h3{color:#e3d2d8}
+.card.yes{border-color:rgba(226,96,138,.35)}
+.card.yes .mark{color:var(--ac2)}
+.card h3{font-size:21px;line-height:1.25;letter-spacing:-.01em;margin-bottom:var(--s2)}
+.card p{color:var(--mu);font-size:16px;line-height:1.6}
+.rule{margin-top:var(--s5);padding:26px 28px;border-left:3px solid var(--ac);background:linear-gradient(90deg,var(--acs),transparent 75%);border-radius:0 14px 14px 0;font-size:18px;line-height:1.55;color:#f0e2e6;max-width:720px}
+
+/* machine */
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:var(--s6)}
+.sig .card{display:flex;flex-direction:column}
+.sig .card .n{font:600 12px/1 var(--mono);color:var(--ac2);letter-spacing:.12em;margin-bottom:var(--s3);display:block}
+.sig .card h3{font-size:19px}
+.sig .card p{margin-bottom:var(--s4)}
+.act{margin-top:auto;padding-top:var(--s3);border-top:1px solid var(--ln);font-size:15px;line-height:1.55;color:var(--mu)}
+.act b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+
+/* about + footer */
+.ab{display:grid;grid-template-columns:1fr 1.4fr;gap:56px}
+.ab h2{margin-bottom:0}
+.ab p{font-size:18px;color:#e3d2d8;line-height:1.6}
+.ab p+p{margin-top:var(--s3)}
+.ab p.q{color:var(--ink);font-size:21px;line-height:1.5;letter-spacing:-.01em;margin-top:var(--s4);padding-top:var(--s4);border-top:1px solid var(--ln)}
+footer{border-top:1px solid var(--ln)}
+footer .w{padding-top:var(--s5);padding-bottom:max(46px,env(safe-area-inset-bottom));font-size:13px;line-height:1.6;color:var(--dim);display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+
+@media(max-width:860px){
+.duo,.sig,.ab{grid-template-columns:1fr;gap:16px}
+section{padding:var(--s7) 0}
+.ab{gap:var(--s2)}
+.ab h2{margin-bottom:var(--s3)}
+}
+@media(max-width:480px){
+:root{--pad:20px}
+.hero{padding:56px 0 var(--s6)}
+.lede{font-size:18px;margin-top:20px}
+.board{margin-top:40px;border-radius:16px}
+.sub{font-size:17px}
+.card{padding:24px 22px}
+.card h3{font-size:20px}
+.rule{font-size:17px;padding:22px 22px}
+.ab p{font-size:17px}
+.ab p.q{font-size:19px}
+.count{padding:18px 14px 4px;gap:8px}
+.clab{padding:12px 14px 0}
+.lanes{padding:6px 10px 12px}
+.lane>button{padding:14px 14px}
+.lname{font-size:14px;gap:8px}
+.detail p{padding:2px 14px 16px}
+}
+@media(prefers-reduced-motion:reduce){
+.dot.b{animation:none}
+.js .fill,.fill{transition:none}
+.js .lane .detail,.js .lane.open .detail{transition:none}
+.js .motionrow{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="w">
+<h1>One launch. Five doors. One date.</h1>
+<p class="lede">Every Tarte drop opens on tartecosmetics.com, TikTok Shop, Ulta, Sephora, and QVC the same morning. The coordinator&rsquo;s real product is the tracker holding every team and partner to that one date.</p>
+
+<div class="board" id="board">
+<div class="bhead"><div class="dots" aria-hidden="true"><i></i><i></i><i></i></div><span class="t">LAUNCH TRACKER &middot; SPRING DROP</span><em class="smp">SAMPLE</em></div>
+<div class="clab" id="clab">T-minus to launch day</div>
+<div class="count" role="timer" aria-label="Sample countdown to a fictional launch date" id="count">
+<div class="cbox"><b id="cd">18</b><span>days</span></div>
+<div class="cbox"><b id="ch">06</b><span>hours</span></div>
+<div class="cbox"><b id="cm">40</b><span>min</span></div>
+<div class="cbox"><b id="cs">00</b><span>sec</span></div>
+</div>
+<div class="lanes" id="lanes">
+<div class="lane ok"><button type="button" aria-expanded="false" aria-controls="d1"><span class="lname"><span class="dot r"></span>tartecosmetics.com</span><span class="pill r">READY</span><span class="track" aria-hidden="true"><span class="fill" style="--w:100%"></span></span></button><div class="detail" id="d1"><p><b>DTC is green.</b> Staging PDP QA is done, inventory is synced, pricing is locked, and old URLs are swept. The home channel sets the reference every other lane matches.</p></div></div>
+<div class="lane warn"><button type="button" aria-expanded="false" aria-controls="d2"><span class="lname"><span class="dot v"></span>TikTok Shop</span><span class="pill v">IN REVIEW</span><span class="track" aria-hidden="true"><span class="fill" style="--w:70%"></span></span></button><div class="detail" id="d2"><p><b>The hold is the review queue, not the work.</b> Listing copy and claims match the approved set, so approval is a waiting game. A watcher checks the listing twice a day and pings Slack the moment status flips.</p></div></div>
+<div class="lane ok"><button type="button" aria-expanded="false" aria-controls="d3"><span class="lname"><span class="dot r"></span>Ulta</span><span class="pill r">READY</span><span class="track" aria-hidden="true"><span class="fill" style="--w:100%"></span></span></button><div class="detail" id="d3"><p><b>Retail intake is signed off.</b> Ship windows are met and no label has changed since signoff. If anything moves, the tracker flags it the same hour, not at the launch call.</p></div></div>
+<div class="lane ok"><button type="button" aria-expanded="false" aria-controls="d4"><span class="lname"><span class="dot r"></span>Sephora</span><span class="pill r">READY</span><span class="track" aria-hidden="true"><span class="fill" style="--w:100%"></span></span></button><div class="detail" id="d4"><p><b>Shade range mirrored with DTC.</b> Every shade, price, and claim matches the home channel. Education kit is with the field team.</p></div></div>
+<div class="lane blocked open"><button type="button" aria-expanded="true" aria-controls="d5"><span class="lname"><span class="dot b"></span>QVC</span><span class="pill b">BLOCKED</span><span class="track" aria-hidden="true"><span class="fill" style="--w:45%"></span></span></button><div class="detail" id="d5"><p><b>One open thread: the long-form cut is still in network review.</b> Product, regulatory, and creative are cleared. This is the only lane that can move the date, which is exactly why the tracker exists: one red lane, seen by everyone, with an owner and a next check.</p></div></div>
+</div>
+</div>
+<div class="motionrow"><button class="pz" id="pz" type="button" aria-pressed="false"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/></svg><span>Pause motion</span></button></div>
+</div>
+</header>
+
+<main>
+<section>
+<div class="w">
+<div class="k">The tension</div>
+<h2>Drift is how launches fracture.</h2>
+<p class="sub">Five channels, five timelines, five definitions of ready. Without one tracker, each lane quietly invents its own.</p>
+<div class="duo">
+<div class="card no"><span class="mark">&times; THE DRIFT</span><h3>Channels slip one by one</h3><p>TikTok Shop goes live a day early. QVC waits on a cut. Shoppers find mismatched shades and prices, and reviews land on the wrong listing.</p></div>
+<div class="card yes"><span class="mark">&#10003; THE HOLD</span><h3>One tracker, one date</h3><p>Every thread reports to a single board. If a lane slips, the whole team sees it the same hour, and the date holds.</p></div>
+</div>
+<div class="rule">Launch day is not a date on a slide deck. It is five channels agreeing, at the same minute, that everything is ready.</div>
+</div>
+</section>
+
+<section>
+<div class="w">
+<div class="k">The machine</div>
+<h2>What I would run from the coordinator seat.</h2>
+<p class="sub">Sketched on my real stack: ClickUp as the spine, n8n as the watcher, Slack as the alarm.</p>
+<div class="sig">
+<div class="card"><span class="n">MOVE 01</span><h3>One spine in ClickUp</h3><p>Every launch lives as one task graph: product, regulatory, creative, and retail partner threads, each with an owner and a due date that counts back from launch day.</p><div class="act"><b>The payoff</b>Nothing is ready until every thread is ready, and everyone can see which thread is not.</div></div>
+<div class="card"><span class="n">MOVE 02</span><h3>n8n watchers on the five doors</h3><p>Scheduled checks sweep each channel listing for price, shade count, and live status. Any drift pings Slack before a customer sees it.</p><div class="act"><b>The payoff</b>The tracker updates itself between standups, so the morning check is reading, not hunting.</div></div>
+<div class="card"><span class="n">MOVE 03</span><h3>A morning-of ritual</h3><p>Launch week runs on a checklist, not memory: final QA pass, partner confirmation log, and one thread where every channel signs off.</p><div class="act"><b>The payoff</b>The launch call becomes a formality, because the board already said yes.</div></div>
+</div>
+</div>
+</section>
+
+<section>
+<div class="w ab">
+<div><div class="k">About</div><h2>Jash Shah</h2></div>
+<div>
+<p>Marketing operations analyst in the NYC metro area.</p>
+<p>I run campaign operations and QA, and build n8n workflow automations on a ClickUp spine to keep every launch on one date.</p>
+<p class="q">I applied for the Marketing Development and Operations Coordinator role on October 3. This sketch is how I would think about the seat.</p>
+</div>
+</div>
+</section>
+</main>
+
+<footer><div class="w"><span>Concept sketch by Jash Shah. All launch names, dates, and channel statuses are fictional sample data.</span><span>Not affiliated with Tarte Cosmetics.</span></div></footer>
+
+<script>
+(()=>{
+const cd=document.getElementById('cd'),ch=document.getElementById('ch'),cm=document.getElementById('cm'),cs=document.getElementById('cs');
+const btn=document.getElementById('pz'),lanes=document.getElementById('lanes');
+const rm=matchMedia('(prefers-reduced-motion: reduce)');
+const target=Date.now()+(((18*24+6)*60+40)*60000);
+let paused=false,timer=0;
+
+function pad(n){return String(n).padStart(2,'0')}
+function tick(){
+  let s=Math.max(0,Math.floor((target-Date.now())/1000));
+  const d=Math.floor(s/86400);s-=d*86400;
+  const h=Math.floor(s/3600);s-=h*3600;
+  const m=Math.floor(s/60);s-=m*60;
+  cd.textContent=pad(d);ch.textContent=pad(h);cm.textContent=pad(m);cs.textContent=pad(s);
+}
+function start(){if(!timer){tick();timer=setInterval(tick,1000);document.body.classList.remove('frozen')}}
+function stop(){if(timer){clearInterval(timer);timer=0}document.body.classList.add('frozen')}
+
+btn.addEventListener('click',()=>{
+  paused=!paused;
+  btn.setAttribute('aria-pressed',String(paused));
+  btn.querySelector('span').textContent=paused?'Resume motion':'Pause motion';
+  btn.querySelector('svg').innerHTML=paused?'<path d="M3 1.5v9l7.5-4.5z"/>':'<rect x="2" y="1" width="3" height="10" rx="1"/><rect x="7" y="1" width="3" height="10" rx="1"/>';
+  paused?stop():start();
+});
+
+const all=[];
+lanes.querySelectorAll('.lane').forEach(lane=>{
+  const b=lane.querySelector('button'),detail=lane.querySelector('.detail');
+  all.push([lane,detail]);
+  b.addEventListener('click',()=>{
+    const open=lane.classList.toggle('open');
+    b.setAttribute('aria-expanded',String(open));
+    detail.style.maxHeight=open?detail.scrollHeight+'px':'';
+  });
+  if(lane.classList.contains('open')){detail.style.maxHeight=detail.scrollHeight+'px'}
+});
+let rz=0;
+addEventListener('resize',()=>{
+  cancelAnimationFrame(rz);
+  rz=requestAnimationFrame(()=>{all.forEach(([l,d])=>{if(l.classList.contains('open')){d.style.maxHeight=d.scrollHeight+'px'}})});
+});
+
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  document.querySelectorAll('.fill').forEach(f=>f.classList.add('go'));
+}));
+
+function applyRM(){
+  if(rm.matches){stop()}else if(!paused){start()}
+}
+start();
+applyRM();
+if(rm.addEventListener){rm.addEventListener('change',applyRM)}
+})();
+</script>
+</body>
+</html>
